@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 
 from api.user import user_blueprint
+from api.board import board_blueprint
 from dotenv import load_dotenv
 import os
 
@@ -12,20 +13,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 app = Flask(__name__)
 
 app.register_blueprint(user_blueprint)
-
-@app.route("/")
-@app.route("/index")
-def index():
-    return render_template("index.html")
-
-@app.route("/login")
-def loginPage():
-    return render_template("login.html")
-
-
-@app.route("/signup")
-def signUpPage():
-    return render_template("signup.html")
+app.register_blueprint(board_blueprint)
 
 if __name__ == '__main__':
     app.run(debug=True)

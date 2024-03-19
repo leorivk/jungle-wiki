@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, redirect
+from flask import Blueprint, render_template, request, jsonify
 from db import db
 import jwt
 from decorator import check_token_expiry
@@ -75,9 +75,16 @@ def create() :
     return jsonify({"message" : "Success"})
 
 
+@board_blueprint.route('/read', methods = ['GET'])
+def read () :
+    board_list = list(boards.find({}, {'_id' : 0}))
+    return jsonify ({'boards' : board_list})
+
+
 @board_blueprint.route('/update/', methods = ['POST'])
 @check_token_expiry
 def update () :
+
     title = request.form.get('title')
     if not title :
         return jsonify ({'error' : '제목이 없습니다.'}), 400
@@ -117,10 +124,10 @@ def delete() :
 
 
 def get_user_id():
-    token = request.cookies.get('user_token')
+    token = request.headers.get('Authorization')
 
     if not token:
-        return redirect("/login")
+        return jsonify({"message": "Authorization token is missing"}), 401
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])

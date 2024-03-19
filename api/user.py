@@ -75,7 +75,6 @@ def login():
 
 @user_blueprint.route("/logout")
 def logout():
-    response = make_response(render_template("index.html", logged_in = False))
+    response = make_response(render_template("index.html", logged_in=False))
     response.set_cookie('user_token', '', expires=0)
-    return response
-
+    return redirect("/")

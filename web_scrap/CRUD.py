@@ -39,7 +39,7 @@ def create () :
     print("text : " + text)
     print("tag : " + tag)
     
-    db.articles.insert_one(articles)
+    db.collection.insert_one(articles)
     return jsonify({"message" : "Success"})
     
 
@@ -60,11 +60,11 @@ def update () :
         return jsonify ({'error' : '링크가 없습니다.'}), 400
     
     text = request.form.get('text')
-    if not url :
+    if not text :
         return jsonify ({'error' : '내용이 없습니다.'}), 400
     
     tag = request.form.get('tag')
-    if not url :
+    if not tag :
         return jsonify ({'error' : '태그가 없습니다.'}), 400
     
     articles = {
@@ -79,13 +79,13 @@ def update () :
     print("text : " + text)
     print("tag : " + tag)
     
-    db.articles.update_one(articles)
+    db.collection.update_one(articles)
     return jsonify({"message" : "Success"})
     
 @app.route('/delete', methods = ['POST'])
 def delete() :
     title = request.form.get('title')
-    db.articles.delete_one({'title' : title})
+    db.collection.delete_one({'title' : title})
     
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5001,debug=True)

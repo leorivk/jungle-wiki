@@ -1,15 +1,34 @@
+import jwt
+import os
 from flask import Blueprint, render_template, request, jsonify
 from db import db
-from user import get_user_id
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 board_blueprint = Blueprint('board', __name__)
 
 boards = db["boards"]
 
+@board_blueprint.route("/")
+def home():
+    return render_template("index.html")
+
 @board_blueprint.route('/create', methods = ['POST'])
 def create () :
 
-    user_id = get_user_id()
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return jsonify({"message": "Authorization token is missing"}), 401
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        user_id = payload['user_id']
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Invalid token"}), 401
 
     title = request.form.get('title')
     if not title :

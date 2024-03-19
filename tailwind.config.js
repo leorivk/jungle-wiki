@@ -2,10 +2,18 @@
 module.exports = {
   content: [
     "./templates/**/*.html",
-    "./static/src/**/*.js"
+    "./static/src/**/*.js",
   ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
+  // 다른 설정...
+  variants: {
+    extend: {
+      width: ['responsive'],
+    },
+  },
 }

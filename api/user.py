@@ -64,18 +64,3 @@ def login():
 
     return jsonify({"token": token}), 200
 
-def get_user_id():
-    token = request.headers.get('Authorization')
-
-    if not token:
-        return jsonify({"message": "Authorization token is missing"}), 401
-
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        user_id = payload['user_id']
-        return user_id
-
-    except jwt.ExpiredSignatureError:
-        return jsonify({"message": "Token has expired"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"message": "Invalid token"}), 401

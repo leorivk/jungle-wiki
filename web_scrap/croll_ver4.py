@@ -36,19 +36,27 @@ def scrap_tistory(url, keyword):
             continue
         txt = tag_element.text
 
-        tag_element = article.select_one('div.list_content > a > img')['src']
-        if not tag_element:
-            continue
-        poster_url_a = tag_element
-        poster_url = 'https:' + poster_url_a 
-        # print(poster_url)
+        if article.select_one('div.list_content > a > img') is None :
+            poster_url = None
+        else :
+            tag_element = article.select_one('div.list_content > a > img')['src']
+            poster_url_a = tag_element
+            poster_url = 'https:' + poster_url_a
+        
+        # tag_element = article.select_one('div.list_content > a > img')['src']
+        # if tag_element is not None :
+        #     poster_url_a = tag_element
+        #     poster_url = 'https:' + poster_url_a 
+        # else :
+        #     poster_url = (None)
+        print(poster_url)
 
-        tag_element = article.select_one('div.list_content > a.thumbnail_post')
+        tag_element = article.select_one('div.list_content > a')
         if not tag_element:
             continue
         info_url_a = tag_element['href']
-        info_url = 'https://krafton-jungle-essay.tistory.com/' + info_url_a
-        # print(info_url)
+        info_url = 'https://' + 'krafton-jungle-essay' + '.tistory.com/' + info_url_a
+        print(info_url)
 
 
         doc = {
@@ -86,9 +94,11 @@ def scrap_velog(url, keyword):
         # print(txt)
 
         tag_element = article.select_one('img')['src']
-        if not tag_element:
-            continue
-        poster_url = tag_element
+        if tag_element is not None :
+            poster_url = tag_element
+        else :
+            poster_url = (None)    
+        
         # print(poster_url)
 
         tag_element = article.select_one('a')
@@ -108,5 +118,5 @@ def scrap_velog(url, keyword):
         db.blog.insert_one(doc)
         print('완료: ', title, txt, poster_url, info_url)
         
-scrap_tistory("https://krafton-jungle-essay.tistory.com/", "pint")
-scrap_velog("https://velog.io/search?q=", "번역")
+scrap_tistory("https://krafton-jungle-essay.tistory.com/", "변화와 비교")
+scrap_velog("https://velog.io/search?q=", "품질")

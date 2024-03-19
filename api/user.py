@@ -21,20 +21,19 @@ def join_page():
 
 @user_blueprint.route('/join', methods=['POST'])
 def join():
-    data = request.get_json()
-
-    required_fields = ['name', 'id', 'password', 'blog_url']
+    data = request.form
+    required_fields = ['username', '_id', 'password', 'blog_url']
     if not all(field in data for field in required_fields):
         return jsonify({"message": "Name, ID, Password, and Blog URL are required"}), 400
 
-    if users.find_one({"id": data['id']}):
+    if users.find_one({"id": data['_id']}):
         return jsonify({"message": "User ID already exists"}), 400
 
     hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
 
     users.insert_one({
-        "name": data['name'],
-        "id": data['id'],
+        "username": data['username'],
+        "id": data['_id'],
         "password": hashed_password,
         "blog_url": data['blog_url']
     })
@@ -48,13 +47,13 @@ def login_page():
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()
+    data = request.form
 
-    required_fields = ['id', 'password']
+    required_fields = ['_id', 'password']
     if not all(field in data for field in required_fields):
         return jsonify({"message": "ID and Password are required"}), 400
 
-    user = users.find_one({"id": data['id']})
+    user = users.find_one({"id": data['_id']})
     if not user or not bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):
         return jsonify({"message": "Invalid ID or password"}), 401
 
@@ -64,3 +63,19 @@ def login():
     }, SECRET_KEY)
 
     return jsonify({"token": token}), 200
+
+def get_user_id():
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return jsonify({"message": "Authorization token is missing"}), 401
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        user_id = payload['user_id']
+        return user_id
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Invalid token"}), 401

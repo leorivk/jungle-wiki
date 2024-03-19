@@ -1,11 +1,7 @@
 import requests
 
 from bs4 import BeautifulSoup
-from pymongo import MongoClient
-
-client = MongoClient('mongodb://localhost:27017/')
-
-db = client["jg_wiki_db"]
+from db import db
 
 # 검색 요청 -> 스크랩 메서드
 def scrap_tistory(url, keyword):
@@ -35,7 +31,6 @@ def scrap_tistory(url, keyword):
             continue
         txt = tag_element.text
  
-
         tag_element = article.select_one('div.detail_info > a')
         if not tag_element:
             continue
@@ -125,4 +120,3 @@ def scrap_velog(user_url, keyword):
         db.blog.insert_one(doc)
         print('완료: ', title, txt, poster_url, info_url)
         
-scrap_velog("https://velog.io/@lee_seolhui", "chatgpt")

@@ -9,23 +9,18 @@
       href="{{url_for('static',filename='dist/css/output.css')}}"
     />
   </head>
-  <style>
-    .width_40per {
-      width: 40%;
-    }
-  </style>
   <body>
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2
           class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
         >
-          로그인
+          회원가입
         </h2>
       </div>
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="login" method="POST">
+        <form class="space-y-6" action="join" method="POST">
           <div>
             <label
               for="_id"
@@ -64,18 +59,52 @@
             </div>
           </div>
 
-          <div class="flex flex-row justify-between space-x-4">
+          <div>
+            <div class="flex items-center justify-between">
+              <label
+                for="username"
+                class="block text-sm font-medium leading-6 text-gray-900"
+                >이름</label
+              >
+            </div>
+            <div class="mt-2">
+              <input
+                id="username"
+                name="username"
+                type="text"
+                autocomplete="current-password"
+                required
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between">
+              <label
+                for="blog_url"
+                class="block text-sm font-medium leading-6 text-gray-900"
+                >블로그 주소</label
+              >
+            </div>
+            <div class="mt-2">
+              <input
+                id="blog_url"
+                name="blog_url"
+                type="text"
+                autocomplete="current-password"
+                required
+                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          <div>
             <button
               type="submit"
-              class="flex width_40per justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               회원가입 하기
-            </button>
-            <button
-              type="submit"
-              class="flex width_40per justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              로그인 하기
             </button>
           </div>
         </form>

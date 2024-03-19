@@ -123,6 +123,3 @@ data = {
 
 for key, value in data.items():
     keywords.insert_one({**value, "_id": key})
-
-cs_document = keywords.find_one({"_id": "cs"})
-print(cs_document)

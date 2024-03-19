@@ -6,3 +6,4 @@ pymongo
 dotenv
 beautifulsoup4
 jinja2
+requests

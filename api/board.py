@@ -1,13 +1,23 @@
 from flask import Blueprint, render_template, request, jsonify
 from db import db
-from user import get_user_id
+import jwt
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 board_blueprint = Blueprint('board', __name__)
 
 boards = db["boards"]
 
+@board_blueprint.route("/")
+def home():
+    return render_template("index.html")
+
 @board_blueprint.route('/create', methods = ['POST'])
-def create () :
+def create() :
 
     user_id = get_user_id()
 
@@ -34,7 +44,7 @@ def create () :
         'text' : text,
         'tag' : tag,
         "likes" : [
-            
+
         ]
     }
 
@@ -56,7 +66,7 @@ def read () :
 
 @board_blueprint.route('/update/', methods = ['POST'])
 def update () :
-  
+
     title = request.form.get('title')
     if not title :
         return jsonify ({'error' : '제목이 없습니다.'}), 400
@@ -93,3 +103,19 @@ def delete() :
     title = request.form.get('title')
     db.articles.delete_one({'title' : title})
 
+
+def get_user_id():
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return jsonify({"message": "Authorization token is missing"}), 401
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        user_id = payload['user_id']
+        return user_id
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Invalid token"}), 401

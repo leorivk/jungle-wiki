@@ -14,7 +14,6 @@ board_blueprint = Blueprint('board', __name__)
 boards = db["boards"]
 
 @board_blueprint.route("/")
-@check_token_expiry
 def home():
     return render_template("index.html")
 

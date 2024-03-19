@@ -19,3 +19,13 @@
 ```
     pip install python-dotenv
 ```
+4. 가상환경
+- 가상환경 들어가기
+```
+    source venv/bin/activate 
+``` 
+    
+- 가상환경 나오기
+```
+    deactivate
+```

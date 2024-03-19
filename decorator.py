@@ -20,13 +20,13 @@ def check_token_expiry(func):
                 current_date = datetime.datetime.now()
                 if current_date > expiration_date:
                     error_message = "토큰이 만료됨"
-                    return render_template(('login.html', error_message))
+                    return render_template('login.html', error_message=error_message)
             except jwt.ExpiredSignatureError:
                 error_message = "토큰이 만료됨"
-                return render_template(('login.html', error_message))
+                return render_template('login.html', error_message=error_message)
             except jwt.InvalidTokenError:
                 error_message = "토큰이 유효하지 않음"
-                return render_template(('login.html', error_message))
+                return render_template('login.html', error_message=error_message)
             
         return func(*args, **kwargs)
     return decorated_function

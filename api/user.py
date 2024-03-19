@@ -61,7 +61,7 @@ def login():
         return redirect(url_for('user.login', error_message='존재하지 않는 ID입니다.'))
 
     if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
-        return redirect(url_for('user.login', error_message='잘못된 비밀번호 입니다.'))
+        return render_template('login.html', error_message='잘못된 비밀번호 입니다.')
 
     token = jwt.encode({
         'user_id': str(user['_id']),

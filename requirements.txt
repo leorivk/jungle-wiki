@@ -1,0 +1,8 @@
+Flask
+jwt
+bcrypt
+datetime
+pymongo
+dotenv
+beautifulsoup4
+jinja2

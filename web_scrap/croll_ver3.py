@@ -1,19 +1,24 @@
 import requests
 
 from bs4 import BeautifulSoup
-from db import db      
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://localhost:27017/')
+
+db = client["jg_wiki_db"]  
 
 # 검색 요청 -> 스크랩 메서드
 def scrap_tistory(url, keyword):
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
     
     data = requests.get(url + "search/" + keyword, headers=headers)
-
+    
     soup = BeautifulSoup(data.text, 'html.parser')
 
     articles = soup.select('div.list_content')
     
     if len(articles) == 0:
+        print("길이가 0")
         return
     
     # 길이가 1 이상이면 렌더링
@@ -60,12 +65,12 @@ def scrap_tistory(url, keyword):
 
 def scrap_velog(url, keyword):
     headers = {'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'}
-    data = requests.get(url + "search/" + keyword, headers=headers)
+    data = requests.get(url + keyword + '&username=' + 'typo', headers=headers)
 
     soup = BeautifulSoup(data.text, 'html.parser')
 
     velog = soup.select('#root > div:nth-child(2) > div:nth-child(3) > div:nth-child(3) > div')
-    # print(len(velog))
+    print(len(velog))
 
     for article in velog:
         tag_element = article.select_one('h2')
@@ -102,3 +107,6 @@ def scrap_velog(url, keyword):
         }
         db.blog.insert_one(doc)
         print('완료: ', title, txt, poster_url, info_url)
+        
+scrap_tistory("https://krafton-jungle-essay.tistory.com/", "pint")
+scrap_velog("https://velog.io/search?q=", "번역")

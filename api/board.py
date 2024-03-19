@@ -16,9 +16,20 @@ boards = db["boards"]
 def home():
     return render_template("index.html")
 
+@board_blueprint.route('/create', methods = ['GET'])
+def create_page():
+    return render_template("board-register.html")
+
+@board_blueprint.route('/detail', methods = ['GET'])
+def detail_page():
+    return render_template("board-detail.html")
+
+@board_blueprint.route('/update', methods = ['GET'])
+def update_page():
+    return render_template("board-update.html")
+
 @board_blueprint.route('/create', methods = ['POST'])
 def create() :
-
     user_id = get_user_id()
 
     title = request.form.get('title')

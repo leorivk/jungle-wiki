@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
+
+from api.keywords import get_keywords
 from db import db
 import jwt
 
@@ -14,6 +16,7 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
+    get_keywords()
     return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])
@@ -29,7 +32,7 @@ def update_page():
     return render_template("board-update.html")
 
 @board_blueprint.route('/create', methods = ['POST'])
-def create() :
+def create():
     user_id = get_user_id()
 
     title = request.form.get('title')

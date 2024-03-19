@@ -124,7 +124,7 @@ def delete() :
 
 
 def get_user_id():
-    token = request.headers.get('Authorization')
+    token = request.cookies.get('user_token')
 
     if not token:
         return jsonify({"message": "Authorization token is missing"}), 401

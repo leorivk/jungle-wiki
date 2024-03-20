@@ -23,6 +23,10 @@ def like():
     board_info = boards.find_one({'_id': ObjectId(board_id)})
 
     user_id = get_user_id()
+
+    if not user_id:
+        return redirect('/login')
+
     
     if board_info['liked_users'] and user_id in board_info['liked_users']:
         new_like_cnt = board_info['like_cnt'] - 1

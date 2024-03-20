@@ -1,9 +1,10 @@
-from flask import request, render_template, redirect
-from functools import wraps
-from dotenv import load_dotenv
-import jwt
 import datetime
 import os
+from functools import wraps
+
+import jwt
+from dotenv import load_dotenv
+from flask import request, render_template, redirect
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')

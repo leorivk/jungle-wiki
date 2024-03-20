@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template, request, jsonify, redirect
-
-from api.keywords import get_keywords
-from db import db
-import jwt
-from decorator import check_token_expiry
+import os
 
 from dotenv import load_dotenv
-import os
+from flask import Blueprint, render_template, request, jsonify, redirect
+
+from db import db
+from decorator.decorator import check_token_expiry
+from utils.jwt_utils import get_user_id
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -24,11 +23,6 @@ def home():
 def create_page():
     return render_template("board-register.html")
 
-@board_blueprint.route('/detail', methods = ['GET'])
-@check_token_expiry
-def detail_page():
-    return render_template("board-detail.html")
-
 @board_blueprint.route('/update', methods = ['GET'])
 @check_token_expiry
 def update_page():
@@ -36,7 +30,7 @@ def update_page():
 
 @board_blueprint.route('/create', methods = ['POST'])
 @check_token_expiry
-def create() :
+def create():
     user_id = get_user_id()
 
     title = request.form.get('title')
@@ -44,42 +38,29 @@ def create() :
     text = request.form.get('text')
     tag = request.form.get('tag')
 
-    articles = {
-        'user_id' : user_id,
-        'title' : title,
-        'url' : url,
-        'text' : text,
-        'tag' : tag,
-        "likes" : [
-
-        ]
-    }
-
-
+    error = None
     if not title :
         error = '제목을 입력하세요'
-        return render_template('board-register.html', error = error, **articles)
     elif not url :
         error = '링크를 입력하세요'
-        return render_template('board-register.html', error = error, **articles)
     elif not text :
         error = '내용을 입력하세요'
-        return render_template('board-register.html', error = error, **articles)
     elif not tag :
         error = '태그를 입력하세요'
-        return render_template('board-register.html', error = error, **articles)
 
-    # if user_id is None :
-    #     return redirect('/login')
+    if error:
+        return render_template('board-register.html', error=error)
 
-
-    print("user_id : " + str(user_id))
-    print("title : " + title)
-    print("url : " + url)
-    print("text : " + text)
-    print("tag : " + tag)
-
+    articles = {
+        'user_id': user_id,
+        'title': title,
+        'url': url,
+        'text': text,
+        'tag': tag,
+        "likes": []
+    }
     db.boards.insert_one(articles)
+
     return redirect('/')
 
 
@@ -89,7 +70,7 @@ def read () :
     return jsonify ({'boards' : board_list})
 
 
-@board_blueprint.route('/update/', methods = ['POST'])
+@board_blueprint.route('/update', methods = ['POST'])
 @check_token_expiry
 def update () :
 
@@ -142,18 +123,3 @@ def delete(board_id) :
     return redirect('/')
 
 
-def get_user_id():
-    token = request.cookies.get('user_token')
-
-    if not token:
-        return None
-
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-        user_id = payload['user_id']
-        return user_id
-
-    except jwt.ExpiredSignatureError:
-        return jsonify({"message": "Token has expired"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"message": "Invalid token"}), 401

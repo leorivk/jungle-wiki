@@ -1,13 +1,11 @@
+import os
+
+import bcrypt
+from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, make_response
-from db import db
 from flask_jwt_extended import create_access_token, create_refresh_token
 
-import jwt
-import bcrypt
-import datetime
-
-from dotenv import load_dotenv
-import os
+from db import db
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -49,22 +47,22 @@ def login_page():
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
-    id = request.form.get('_id', '')
-    password = request.form.get('password', '')
+    user_id = request.form.get('_id')
+    password = request.form.get('password')
 
-    if not password:
-        return redirect(url_for('user.login', _id=id, error_message='비밀번호를 입력하세요'))
-    
-    if not id:
+    if not user_id:
         return redirect(url_for('user.login', error_message='아이디를 입력하세요'))
+    if not password:
+        return redirect(url_for('user.login', _id=user_id, error_message='비밀번호를 입력하세요'))
 
-    user = users.find_one({"id": id})
+    user = users.find_one({"id": user_id})
     if not user:
-        return redirect(url_for('user.login', error_message='존재하지 않는 ID입니다.'))
-    access_token = create_access_token(identity=user["_id"])
-    refresh_token = create_refresh_token(identity=user["_id"])
+        return render_template('login.html', error_message='존재하지 않는 ID입니다.')
     if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
         return render_template('login.html', error_message='잘못된 비밀번호 입니다.')
+
+    access_token = create_access_token(identity=user_id)
+    refresh_token = create_refresh_token(identity=user_id)
 
     response = make_response(render_template("index.html", logged_in = True))
     response.set_cookie('access_token', access_token)

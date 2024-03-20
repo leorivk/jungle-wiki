@@ -29,3 +29,6 @@
 ```
     deactivate
 ```
+
+# AWS 배포 시
+1. 

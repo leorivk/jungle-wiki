@@ -1,14 +1,13 @@
 import os
-from flask import Flask, redirect, request, make_response, render_template
-from api.user import user_blueprint
-from api.board import board_blueprint
+
 from dotenv import load_dotenv
-from scrap.json_provider import CustomJSONProvider
-from flask_jwt_extended import JWTManager
-
+from flask import Flask, redirect, request, make_response
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
-from api.keywords import get_keywords
 
+from api.board import board_blueprint
+from api.comment import comment_blueprint
+from api.user import user_blueprint
+from scrap.json_provider import CustomJSONProvider
 
 # .env 파일로부터 환경 변수 로드
 load_dotenv()
@@ -19,16 +18,10 @@ app.json = CustomJSONProvider(app)
 
 app.register_blueprint(user_blueprint)
 app.register_blueprint(board_blueprint)
+app.register_blueprint(comment_blueprint)
 
 jwt = JWTManager(app)
 app.config['JWT_SECRET_KEY'] = SECRET_KEY
-
-print(get_keywords())
-
-# @app.context_processor
-# def inject_keywords():
-#     keywords = get_keywords()
-#     return render_template('sidebar.html', keywords=keywords)
 
 @app.route('/refresh', methods=['POST'])
 def refresh():

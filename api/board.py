@@ -1,8 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
-
-from api.keywords import get_keywords
 from db import db
 import jwt
+from decorator import check_token_expiry
 
 from dotenv import load_dotenv
 import os
@@ -16,23 +15,26 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    get_keywords()
     return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])
+@check_token_expiry
 def create_page():
     return render_template("board-register.html")
 
 @board_blueprint.route('/detail', methods = ['GET'])
+@check_token_expiry
 def detail_page():
     return render_template("board-detail.html")
 
 @board_blueprint.route('/update', methods = ['GET'])
+@check_token_expiry
 def update_page():
     return render_template("board-update.html")
 
 @board_blueprint.route('/create', methods = ['POST'])
-def create():
+@check_token_expiry
+def create() :
     user_id = get_user_id()
 
     title = request.form.get('title')
@@ -79,6 +81,7 @@ def read () :
 
 
 @board_blueprint.route('/update/', methods = ['POST'])
+@check_token_expiry
 def update () :
 
     title = request.form.get('title')
@@ -113,13 +116,14 @@ def update () :
     return jsonify({"message" : "Success"})
 
 @board_blueprint.route('/delete', methods = ['POST'])
+@check_token_expiry
 def delete() :
     title = request.form.get('title')
     db.articles.delete_one({'title' : title})
 
 
 def get_user_id():
-    token = request.headers.get('Authorization')
+    token = request.cookies.get('user_token')
 
     if not token:
         return jsonify({"message": "Authorization token is missing"}), 401

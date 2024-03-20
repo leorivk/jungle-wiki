@@ -1,5 +1,6 @@
-from flask import Blueprint, jsonify, request, render_template, redirect, url_for
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for, make_response
 from db import db
+from flask_jwt_extended import create_access_token, create_refresh_token
 
 import jwt
 import bcrypt
@@ -10,6 +11,7 @@ import os
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
+
 
 user_blueprint = Blueprint('user', __name__)
 
@@ -42,25 +44,36 @@ def join():
 
 @user_blueprint.route('/login', methods=['GET'])
 def login_page():
-    return render_template('login.html')
+    return render_template("login.html")
 
 
 @user_blueprint.route('/login', methods=['POST'])
 def login():
-    data = request.form
+    id = request.form.get('_id', '')
+    password = request.form.get('password', '')
 
-    required_fields = ['_id', 'password']
-    if not all(field in data for field in required_fields):
-        return jsonify({"message": "ID and Password are required"}), 400
+    if not password:
+        return redirect(url_for('user.login', _id=id, error_message='비밀번호를 입력하세요'))
+    
+    if not id:
+        return redirect(url_for('user.login', error_message='아이디를 입력하세요'))
 
-    user = users.find_one({"id": data['_id']})
-    if not user or not bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):
-        return jsonify({"message": "Invalid ID or password"}), 401
+    user = users.find_one({"id": id})
+    if not user:
+        return redirect(url_for('user.login', error_message='존재하지 않는 ID입니다.'))
+    access_token = create_access_token(identity=user["_id"])
+    refresh_token = create_refresh_token(identity=user["_id"])
+    if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        return render_template('login.html', error_message='잘못된 비밀번호 입니다.')
 
-    token = jwt.encode({
-        'user_id': str(user['_id']),
-        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
-    }, SECRET_KEY)
+    response = make_response(render_template("index.html", logged_in = True))
+    response.set_cookie('access_token', access_token)
+    response.set_cookie('refresh_token', refresh_token)
 
-    return jsonify({"token": token}), 200
+    return response
 
+@user_blueprint.route("/logout")
+def logout():
+    response = make_response(render_template("index.html", logged_in=False))
+    response.set_cookie('user_token', '', expires=0)
+    return redirect("/")

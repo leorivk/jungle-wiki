@@ -45,5 +45,9 @@ def refresh():
     except:
         return redirect("/")
         
+@app.context_processor
+def inject_keywords():
+    return dict(keywords=keywords)
+
 if __name__ == '__main__':
     app.run(debug=True)

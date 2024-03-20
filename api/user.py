@@ -10,9 +10,7 @@ from db import db
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-
 user_blueprint = Blueprint('user', __name__)
-
 users = db["users"]
 
 @user_blueprint.route('/join', methods=['GET'])
@@ -73,5 +71,5 @@ def login():
 @user_blueprint.route("/logout")
 def logout():
     response = make_response(render_template("index.html", logged_in=False))
-    response.set_cookie('user_token', '', expires=0)
+    response.set_cookie('access_token', '', expires=0)
     return redirect("/")

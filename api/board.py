@@ -1,7 +1,8 @@
 import os
+from pymongo import errors
 
 from dotenv import load_dotenv
-from flask import Blueprint, render_template, request, jsonify, redirect
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 
 from db import db
 from decorator.decorator import check_token_expiry
@@ -16,6 +17,8 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
+    data = boards.find({})
+    print(list(data))
     return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])
@@ -36,7 +39,8 @@ def create():
     title = request.form.get('title')
     url = request.form.get('url')
     text = request.form.get('text')
-    tag = request.form.get('tag')
+    tag = request.form.get('tag'),
+    subtag = request.form.get('subtag')
 
     error = None
     if not title :
@@ -57,22 +61,24 @@ def create():
         'url': url,
         'text': text,
         'tag': tag,
+        'subtag' : subtag,
         "likes": []
     }
-    db.boards.insert_one(articles)
 
-    return redirect('/')
+    try:
+        boards.insert_one(articles)
+    except errors.DuplicateKeyError:
+        print("Duplicate user_id. Can't insert the article.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-
-@board_blueprint.route('/read', methods = ['GET'])
-def read () :
-    board_list = list(boards.find({}, {'_id' : 0}))
-    return jsonify ({'boards' : board_list})
+    board_id = boards["_id"]
+    return redirect(url_for('board.home', board_id = board_id))
 
 
 @board_blueprint.route('/update', methods = ['POST'])
 @check_token_expiry
-def update () :
+def update() :
 
     title = request.form.get('title')
     if not title :

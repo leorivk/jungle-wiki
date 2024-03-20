@@ -9,6 +9,8 @@ from db import db
 from decorator import check_token_expiry
 from utils.jwt_utils import get_user_id
 
+from scrap import scrap_image
+
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
@@ -38,6 +40,7 @@ def create():
         text = request.form.get('text')
         tag = request.form.get('tag')
         subtag = request.form.get('subtag')
+        image_url = scrap_image(url)
 
         error = None
         if not title :
@@ -49,11 +52,15 @@ def create():
         elif not tag :
             error = '태그를 입력하세요'
 
+        if image_url == None:
+            image_url = "https://kraftonjungle.notion.site/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F687a8a30-f3e6-4780-8e2c-a390011e3970%2F%25ED%2581%25AC%25EB%259E%2598%25ED%2594%2584%25ED%2586%25A4%25EC%25A0%2595%25EA%25B8%2580%25EB%25A1%259C%25EA%25B3%25A0.png?table=block&id=94d6df8c-7e1a-47af-871d-e52209f7d65c&spaceId=fb27bd18-c7e6-4eea-a450-a3c60e705e8a&width=250&userId=&cache=v2"
+        
         if error:
             return render_template('board-register.html', error=error)
 
         articles = {
             'user_id': user_id,
+            "image_url" : image_url,
             'title': title,
             'url': url,
             'text': text,

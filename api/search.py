@@ -18,7 +18,8 @@ def search():
         '$or': [
             {'title': regex_query},
             {'text': regex_query},
-            {'tag': regex_query}
+            {'tag': regex_query},
+            {'subtag' : regex_query}
         ]
     }
 

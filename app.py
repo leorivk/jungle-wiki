@@ -34,4 +34,4 @@ app.register_blueprint(paste_blueprint)
 app.context_processor(inject_template_globals)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run('0.0.0.0', port=5000, debug=True)

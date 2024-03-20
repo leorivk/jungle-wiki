@@ -8,6 +8,7 @@ from api.board import board_blueprint
 from api.comment import comment_blueprint
 from api.user import user_blueprint
 from scrap.json_provider import CustomJSONProvider
+from utils.keywords import keywords
 
 # .env 파일로부터 환경 변수 로드
 load_dotenv()

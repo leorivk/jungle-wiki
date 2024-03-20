@@ -19,35 +19,37 @@ likes = db["likes"]
 
 @likes_blueprint.route('/like', methods = ['POST'])
 def like():
-    # 1. board_id : 어떤 게시물이 좋아요가 눌렀는가?
+    previous_url = request.referrer
+    print(previous_url)
     board_id = request.form.get('board_id')
-    
     board_info = boards.find_one({'_id': ObjectId(board_id)})
-    # 2. user_id : 누가 눌렸냐?
+
     user_id = get_user_id()
     
-    if user_id in board_info['liked_users'] :
+    if board_info['liked_users'] and user_id in board_info['liked_users']:
         new_like_cnt = board_info['like_cnt'] - 1
-        liked_users = board_info['liked_users']
-        liked_users.remove(user_id)
+        liked_users = board_info['liked_users'].remove(user_id)
         db.boards.update_one(
             {'_id': ObjectId(board_id)},
             {'$set': {
                 'like_cnt' : new_like_cnt,
-                'liked_users' : liked_users
+                'liked_users': liked_users
             }}
         )
     else:
         new_like_cnt = board_info['like_cnt'] + 1
-        liked_users = board_info['liked_users']
+        liked_users = []
+        liked_users.append(board_info['liked_users'])
         liked_users.append(user_id)
         db.boards.update_one(
             {'_id': ObjectId(board_id)},
             {'$set': {
                 'like_cnt' : new_like_cnt,
-                'liked_users' : liked_users
+                'liked_users': liked_users
             }}
         )
-        
-    
-    return redirect('/board/' + board_id)
+    if previous_url == 'http://127.0.0.1:5000/':
+        return redirect('/')
+    else:
+        return redirect('/board/' + board_id)
+

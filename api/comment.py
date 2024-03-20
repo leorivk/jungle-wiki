@@ -22,7 +22,11 @@ def board_detail_page(board_id):
     board_info = boards.find_one({'_id': ObjectId(board_id)})
     comment_list = list(comments.find({'board_id': board_id}))
 
-    return render_template("board-detail.html", board_info = board_info, comment_list = comment_list, logged_user_id = user_id, board_id = board_id)
+    is_like = False
+    if board_info['liked_users']:
+        is_like = user_id in board_info['liked_users']
+
+    return render_template("board-detail.html", board_info=board_info, comment_list=comment_list, logged_user_id=user_id, board_id=board_id, is_like=is_like)
 
 @comment_blueprint.route('/comment', methods = ['POST'])
 def comment_create():

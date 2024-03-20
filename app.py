@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, redirect, request, make_response
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity, JWTManager
 
 from api.board import board_blueprint
 from api.comment import comment_blueprint
@@ -33,7 +33,6 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = True  # CSRF 보호 활성화 (기본값
 jwt = JWTManager(app)
 
 @app.route('/refresh', methods=['POST'])
-@jwt
 def refresh():
     refresh_token = request.cookies.get("refresh_token")
     if not refresh_token:

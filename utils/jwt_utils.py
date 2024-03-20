@@ -34,3 +34,19 @@ def is_my_board(board_user_id):
         return False
     except jwt.InvalidTokenError:
         return False
+
+def is_like_board(board):
+    token = request.cookies.get('access_token')
+    if not token:
+        return False
+
+    try:
+        decoded_token = decode_token(token)
+        user_id = decoded_token['sub']
+        if board['liked_users'] and user_id in board['liked_users']:
+            return True
+        return False
+    except jwt.ExpiredSignatureError:
+        return False
+    except jwt.InvalidTokenError:
+        return False

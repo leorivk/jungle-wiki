@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 
 from db import db
 from decorator import check_token_expiry
-from utils.jwt_utils import get_user_id, is_my_board
+from utils.jwt_utils import get_user_id, is_my_board, is_like_board
 
 from scrap import scrap_image
 
@@ -23,6 +23,7 @@ def home():
     board_list = list(boards.find({}).sort([("like_cnt", -1), ("comment_cnt", -1)]))
     for board in board_list:
         board['is_my_board'] = is_my_board(board['user_id'])
+        board['is_like'] = is_like_board(board)
     return render_template("index.html", board_list=board_list)
 
 @board_blueprint.route('/create', methods = ['GET', 'POST'])

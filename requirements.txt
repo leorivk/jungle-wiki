@@ -3,7 +3,7 @@ jwt
 bcrypt
 datetime
 pymongo
-dotenv
+python-dotenv
 beautifulsoup4
 jinja2
 requests

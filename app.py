@@ -1,8 +1,9 @@
 import os
-from flask import Flask
+from flask import Flask, render_template, request, redirect
 from api.user import user_blueprint
 from api.board import board_blueprint
-from api.keywords import keyword_blueprint
+
+
 from dotenv import load_dotenv
 print("Done")
 from scrap.json_provider import CustomJSONProvider
@@ -15,7 +16,7 @@ app.json = CustomJSONProvider(app)
 
 app.register_blueprint(user_blueprint)
 app.register_blueprint(board_blueprint)
-app.register_blueprint(keyword_blueprint)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

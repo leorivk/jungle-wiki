@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect
 
 from api.keywords import get_keywords
 from db import db
@@ -36,21 +36,10 @@ def create():
     user_id = get_user_id()
 
     title = request.form.get('title')
-    if not title :
-        return jsonify ({'error' : '제목이 없습니다.'}), 400
-
     url = request.form.get('url')
-    if not url :
-        return jsonify ({'error' : '링크가 없습니다.'}), 400
-
     text = request.form.get('text')
-    if not url :
-        return jsonify ({'error' : '내용이 없습니다.'}), 400
-
     tag = request.form.get('tag')
-    if not url :
-        return jsonify ({'error' : '태그가 없습니다.'}), 400
-
+    
     articles = {
         'user_id' : user_id,
         'title' : title,
@@ -61,15 +50,33 @@ def create():
 
         ]
     }
+    
+    
+    if not title :
+        error = '제목을 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not url :
+        error = '링크를 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not text :
+        error = '내용을 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not tag :
+        error = '태그를 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
 
-    print("user_id : " + user_id)
+    # if user_id is None :
+    #     return redirect('/login')
+    
+
+    print("user_id : " + str(user_id))
     print("title : " + title)
     print("url : " + url)
     print("text : " + text)
     print("tag : " + tag)
 
-    db.articles.insert_one(articles)
-    return jsonify({"message" : "Success"})
+    db.boards.insert_one(articles)
+    return redirect('/#')
 
 
 @board_blueprint.route('/read', methods = ['GET'])
@@ -109,20 +116,31 @@ def update () :
     print("text : " + text)
     print("tag : " + tag)
 
-    db.articles.update_one(articles)
+    db.boards.update_one(articles)
     return jsonify({"message" : "Success"})
 
 @board_blueprint.route('/delete', methods = ['POST'])
-def delete() :
+def delete(board_id) :
+    
+    user_id = get_user_id()
+    
+    board = db.boards.find_one({'_id' : board_id, 'user_id' : user_id})
+    if board :
+        db.boards.delete_one({'_id' : board_id})
+        return redirect('/#')
+    else:
+        return redirect('/login')
+    
     title = request.form.get('title')
-    db.articles.delete_one({'title' : title})
+    db.boards.delete_one({'title' : title})
+    return redirect('/#')
 
 
 def get_user_id():
     token = request.headers.get('Authorization')
 
     if not token:
-        return jsonify({"message": "Authorization token is missing"}), 401
+        return None
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect
 app = Flask(__name__)
 
 import requests
@@ -11,21 +11,11 @@ collection = db['boards']
 
 @app.route('/create', methods = ['POST'])
 def create () :
+    error = None
     title = request.form.get('title')
-    if not title :
-        return jsonify ({'error' : '제목이 없습니다.'}), 400
-    
     url = request.form.get('url')
-    if not url :
-        return jsonify ({'error' : '링크가 없습니다.'}), 400
-    
     text = request.form.get('text')
-    if not url :
-        return jsonify ({'error' : '내용이 없습니다.'}), 400
-    
     tag = request.form.get('tag')
-    if not url :
-        return jsonify ({'error' : '태그가 없습니다.'}), 400
     
     articles = {
         'title' : title,
@@ -34,38 +24,52 @@ def create () :
         'tag' : tag,
     }
     
-    print("title : " + title)
-    print("url : " + url)
-    print("text : " + text)
-    print("tag : " + tag)
+    if not title :
+        error = '제목을 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not url :
+        error = '링크를 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not text :
+        error = '내용을 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not tag :
+        error = '태그를 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    
+    
     
     db.collection.insert_one(articles)
-    return jsonify({"message" : "Success"})
+    return render_template('board-register.html')
     
 
 @app.route('/read', methods = ['GET'])
 def read () :
     boards = list(collection.find({}, {'_id' : 0}))
-    return jsonify ({'boards' : boards})
+    return redirect('/index.html')
     
     
 @app.route('/update', methods = ['POST'])
 def update () :
     title = request.form.get('title')
-    if not title :
-        return jsonify ({'error' : '제목이 없습니다.'}), 400
-    
     url = request.form.get('url')
-    if not url :
-        return jsonify ({'error' : '링크가 없습니다.'}), 400
-    
     text = request.form.get('text')
-    if not text :
-        return jsonify ({'error' : '내용이 없습니다.'}), 400
-    
     tag = request.form.get('tag')
-    if not tag :
-        return jsonify ({'error' : '태그가 없습니다.'}), 400
+    
+    
+    if not title :
+        error = '제목을 입력하세요'
+        return render_template('board-update.html', error = error)
+    elif not url :
+        error = '링크를 입력하세요'
+        return render_template('board-update.html', error = error)
+    elif not text :
+        error = '내용을 입력하세요'
+        return render_template('board-update.html', error = error)
+    elif not tag :
+        error = '태그를 입력하세요'
+        return render_template('board-update.html', error = error)
+    
     
     articles = {
         'title' : title,
@@ -74,18 +78,14 @@ def update () :
         'tag' : tag,
     }
     
-    print("title : " + title)
-    print("url : " + url)
-    print("text : " + text)
-    print("tag : " + tag)
-    
-    db.collection.update_one(articles)
-    return jsonify({"message" : "Success"})
+    db.collection.insert_one(articles)
+    return render_template('index.html')
     
 @app.route('/delete', methods = ['POST'])
 def delete() :
     title = request.form.get('title')
     db.collection.delete_one({'title' : title})
-    
+    return render_template('index_html')
+
 if __name__ == '__main__':
    app.run('0.0.0.0',port=5001,debug=True)

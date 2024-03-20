@@ -1,64 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
     <title>Title</title>
-  </head>
-  <body>
-    {% include 'sidebar.html' %}
+</head>
+<script>
+    const topicSelect = document.getElementById("select_topic");
+    const subtopicSelect = document.getElementById("subtopic");
 
-    <div
-      class="p-4 sm:ml-64 h-screen py-6 flex flex-col justify-center sm:py-12"
-    >
-      <div class="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div
-          class="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10"
-        >
-          <div class="max-w-md mx-auto">
-            <div class="flex items-center space-x-5">
-              <div
-                class="block pl-2 font-semibold text-xl self-start text-gray-700"
-              >
-                <h2 class="leading-relaxed">게시글 작성하기</h2>
-                <p class="text-sm text-gray-500 font-normal leading-relaxed">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                </p>
-              </div>
-            </div>
-            {% if error %}
-            <p style="color: red">{{ error }}</p>
-            {% endif %}
-            <form method="post" action="/create">
-              <div class="flex flex-col">
-                <label class="leading-loose">게시글 제목</label>
-                <input
-                  type="text"
-                  name="title"
-                  class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                  placeholder="게시글 제목"
-                  value="{{ title }}"
-                />
-              </div>
-              <div class="flex flex-col">
-                <label class="leading-loose">블로그 URL</label>
-                <input
-                  type="url"
-                  name="url"
-                  class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                  placeholder="블로그 URL"
-                  value="{{ url }}"
-                />
-              </div>
-              <div class="flex flex-col">
-                <label class="leading-loose">게시글 설명</label>
-                <input
-                  type="text"
-                  name="text"
-                  class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                  placeholder="게시글 설명"
-                  value="{{ text }}"
-                />
-              </div>
+    subtopicSelect.innerHTML = "";
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Choose a subtopic";
+    subtopicSelect.appendChild(defaultOption);
+
+    const keywords = {{ keywords|tojson }};
+
+    topicSelect.addEventListener("change", function () {
+        const selectedTopic = this.value;
+        console.log(selectedTopic);
+        if (selectedTopic) {
+            keywords[selectedTopic].forEach((tag) => {
+                const option = document.createElement("option");
+                option.value = tag;
+                option.textContent = tag;
+                subtopicSelect.appendChild(option);
+            });
+            subtopicSelect.disabled = false;
+        } else {
+            subtopicSelect.disabled = true;
+        }
+    });
+</script>
+<body>
+{% include 'sidebar.html' %}
+
+<div class="p-4 sm:ml-64 h-screen py-6 flex flex-col justify-center sm:py-12">
+    <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10">
+            <div class="max-w-md mx-auto">
+                <div class="flex items-center space-x-5">
+                    <div class="block pl-2 font-semibold text-xl self-start text-gray-700">
+                        <h2 class="leading-relaxed">게시글 작성하기</h2>
+                        <p class="text-sm text-gray-500 font-normal leading-relaxed">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                    </div>
+                </div>
+                {% if error %}
+                <p style="color: red;">{{ error }}</p>
+                {% endif %}
+                <form method="post" action="/create">
+                    <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                        <div class="flex flex-col">
+                            <label class="leading-loose">게시글 제목</label>
+                            <input type="text" name="title"
+                                   class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                   placeholder="게시글 제목" value="{{ title }}">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="leading-loose">블로그 URL</label>
+                            <input type="url" name="url"
+                                   class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                   placeholder="블로그 URL" value="{{ url }}">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="leading-loose">게시글 설명</label>
+                            <input type="text" name="text"
+                                   class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                                   placeholder="게시글 설명" value="{{ text }}">
+                        </div>
 
               <!--       태크      -->
               <div class="flex flex-row justify-between">
@@ -114,34 +124,7 @@
                 </div>
               </div>
 
-              <script>
-                const topicSelect = document.getElementById("select_topic");
-                const subtopicSelect = document.getElementById("subtopic");
 
-                subtopicSelect.innerHTML = "";
-                const defaultOption = document.createElement("option");
-                defaultOption.value = "";
-                defaultOption.textContent = "Choose a subtopic";
-                subtopicSelect.appendChild(defaultOption);
-
-                const keywords = {{ keywords|tojson }};
-
-                topicSelect.addEventListener("change", function () {
-                  const selectedTopic = this.value;
-                  console.log(selectedTopic);
-                  if (selectedTopic) {
-                    keywords[selectedTopic].forEach((tag) => {
-                      const option = document.createElement("option");
-                      option.value = tag;
-                      option.textContent = tag;
-                      subtopicSelect.appendChild(option);
-                    });
-                    subtopicSelect.disabled = false;
-                  } else {
-                    subtopicSelect.disabled = true;
-                  }
-                });
-              </script>
 
               <div class="pt-4 flex items-center space-x-4">
                 <button

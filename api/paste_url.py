@@ -23,5 +23,10 @@ def paste():
     board_info = boards.find_one({'_id': ObjectId(board_id)})
     url = board_info['url']
     clipboard.copy(url)
-    
-    return redirect('/board/' + board_id)
+
+    previous_url = request.referrer
+    domain_url = request.base_url.replace("paste", "")
+    if previous_url == domain_url:
+        return redirect('/')
+    else:
+        return redirect('/board/' + board_id)

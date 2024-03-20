@@ -19,8 +19,6 @@ likes = db["likes"]
 
 @likes_blueprint.route('/like', methods = ['POST'])
 def like():
-    previous_url = request.referrer
-    print(previous_url)
     board_id = request.form.get('board_id')
     board_info = boards.find_one({'_id': ObjectId(board_id)})
 
@@ -48,7 +46,10 @@ def like():
                 'liked_users': liked_users
             }}
         )
-    if previous_url == 'http://127.0.0.1:5000/':
+
+    previous_url = request.referrer
+    domain_url = request.base_url.replace("like", "")
+    if previous_url == domain_url:
         return redirect('/')
     else:
         return redirect('/board/' + board_id)

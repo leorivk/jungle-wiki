@@ -57,8 +57,10 @@ def login():
     user = users.find_one({"id": id})
     if not user:
         return redirect(url_for('user.login', error_message='존재하지 않는 ID입니다.'))
-    access_token = create_access_token(identity=user["_id"])
-    refresh_token = create_refresh_token(identity=user["_id"])
+    
+    access_token = create_access_token(identity=id)
+    refresh_token = create_refresh_token(identity=id)
+    
     if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
         return render_template('login.html', error_message='잘못된 비밀번호 입니다.')
 
@@ -71,5 +73,5 @@ def login():
 @user_blueprint.route("/logout")
 def logout():
     response = make_response(render_template("index.html", logged_in=False))
-    response.set_cookie('user_token', '', expires=0)
+    response.set_cookie('access_token', '', expires=0)
     return redirect("/")

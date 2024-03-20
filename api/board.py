@@ -19,7 +19,6 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    keywords = get_keywords()
     return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])
@@ -57,7 +56,6 @@ def create() :
 
         ]
     }
-
 
     if not title :
         error = '제목을 입력하세요'

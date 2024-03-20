@@ -6,6 +6,8 @@ from decorator import check_token_expiry
 from dotenv import load_dotenv
 import os
 
+from api.keywords import get_keywords
+
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
@@ -15,6 +17,7 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
+    keywords = get_keywords()
     return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])

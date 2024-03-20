@@ -121,4 +121,4 @@ data = {
 
 keywords = db["keywords"]
 for key, value in data.items():
-    keywords.insert_one({**value, "_id": key})
+    keywords.insert_one({**value, "key": key})

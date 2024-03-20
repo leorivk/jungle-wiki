@@ -20,3 +20,5 @@ def get_tags(key):
     tags = [{"tags": doc["tags"]} for doc in keys][0]["tags"]
     
     return tags
+
+keywords = get_keywords()

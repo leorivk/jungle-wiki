@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, make_response
 from db import db
 from flask_jwt_extended import create_access_token, create_refresh_token
+from api.keywords import keywords
 
 import bcrypt
 
@@ -47,7 +48,7 @@ def login_page():
 def login():
     id = request.form.get('_id', '')
     password = request.form.get('password', '')
-
+    key = keywords
     if not password:
         return redirect(url_for('user.login', _id=id, error_message='비밀번호를 입력하세요'))
     
@@ -64,7 +65,7 @@ def login():
     if not bcrypt.checkpw(password.encode('utf-8'), user['password']):
         return render_template('login.html', error_message='잘못된 비밀번호 입니다.')
 
-    response = make_response(render_template("index.html", logged_in = True))
+    response = make_response(render_template("index.html", keywords = key, logged_in = True))
     response.set_cookie('access_token', access_token)
     response.set_cookie('refresh_token', refresh_token)
 

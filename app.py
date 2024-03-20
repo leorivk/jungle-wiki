@@ -1,12 +1,14 @@
 import os
-from flask import Flask, redirect, request, make_response, render_template
+from flask import Flask, redirect, request, make_response
 from api.user import user_blueprint
 from api.board import board_blueprint
 from dotenv import load_dotenv
 from scrap.json_provider import CustomJSONProvider
 from flask_jwt_extended import JWTManager
+from api.keywords import keywords
 
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
+
 
 
 # .env 파일로부터 환경 변수 로드
@@ -44,5 +46,9 @@ def refresh():
     except:
         return redirect("/")
         
+@app.context_processor
+def inject_keywords():
+    return dict(keywords=keywords)
+
 if __name__ == '__main__':
     app.run(debug=True)

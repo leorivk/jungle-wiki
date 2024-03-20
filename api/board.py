@@ -1,12 +1,15 @@
-from flask import Blueprint, render_template, request, jsonify, redirect
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from pymongo import errors
 
-from api.keywords import get_keywords
+from api.keywords import keywords
 from db import db
 import jwt
 from decorator import check_token_expiry
 
 from dotenv import load_dotenv
 import os
+
+key = keywords
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -17,8 +20,9 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    keywords = get_keywords()
-    return render_template("index.html", keywords=keywords)
+    data = boards.find({})
+    print(list(data))
+    return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])
 @check_token_expiry
@@ -43,7 +47,8 @@ def create() :
     title = request.form.get('title')
     url = request.form.get('url')
     text = request.form.get('text')
-    tag = request.form.get('tag')
+    tag = request.form.get('tag'),
+    subtag = request.form.get('subtag')
 
     articles = {
         'user_id' : user_id,
@@ -51,8 +56,8 @@ def create() :
         'url' : url,
         'text' : text,
         'tag' : tag,
+        'subtag' : subtag,
         "likes" : [
-
         ]
     }
 
@@ -69,68 +74,74 @@ def create() :
         error = '태그를 입력하세요'
         return render_template('board-register.html', error = error, **articles)
 
-    # if user_id is None :
-    #     return redirect('/login')
-
 
     print("user_id : " + str(user_id))
     print("title : " + title)
     print("url : " + url)
     print("text : " + text)
-    print("tag : " + tag)
+    print("tag : " + str(tag))
+    print("subtag : " + str(subtag))
+    
+    try:
+        boards.insert_one(articles)
+    except errors.DuplicateKeyError:
+        print("Duplicate user_id. Can't insert the article.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    board_id = boards["_id"]
+    return redirect(url_for('board.home', board_id = board_id))
 
-    db.boards.insert_one(articles)
-    return redirect('/')
+
+@board_blueprint.route('/<board_id>')
+def show_board(board_id):
+    board = db.boards.find_one({'_id': board_id})
+    if board:
+        return render_template('board_detail.html', board=board)
+    else:
+        return render_template('404.html'), 404
 
 
-@board_blueprint.route('/read', methods = ['GET'])
-def read () :
-    board_list = list(boards.find({}, {'_id' : 0}))
-    return jsonify ({'boards' : board_list})
+# @board_blueprint.route('/<board_id>/update/', methods = ['POST'])
+# @check_token_expiry
+# def update(board_id) :
 
+#     title = request.form.get('title')
+#     if not title :
+#         return jsonify ({'error' : '제목이 없습니다.'}), 400
 
-@board_blueprint.route('/update/', methods = ['POST'])
-@check_token_expiry
-def update () :
+#     url = request.form.get('url')
+#     if not url :
+#         return jsonify ({'error' : '링크가 없습니다.'}), 400
 
-    title = request.form.get('title')
-    if not title :
-        return jsonify ({'error' : '제목이 없습니다.'}), 400
+#     text = request.form.get('text')
+#     if not url :
+#         return jsonify ({'error' : '내용이 없습니다.'}), 400
 
-    url = request.form.get('url')
-    if not url :
-        return jsonify ({'error' : '링크가 없습니다.'}), 400
+#     tag = request.form.get('tag')
+#     if not url :
+#         return jsonify ({'error' : '태그가 없습니다.'}), 400
 
-    text = request.form.get('text')
-    if not url :
-        return jsonify ({'error' : '내용이 없습니다.'}), 400
+#     articles = {
+#         'title' : title,
+#         'url' : url,
+#         'text' : text,
+#         'tag' : tag,
+#     }
 
-    tag = request.form.get('tag')
-    if not url :
-        return jsonify ({'error' : '태그가 없습니다.'}), 400
+#     print("title : " + title)
+#     print("url : " + url)
+#     print("text : " + text)
+#     print("tag : " + tag)
 
-    articles = {
-        'title' : title,
-        'url' : url,
-        'text' : text,
-        'tag' : tag,
-    }
+#     db.boards.update_one(boards, articles)
+#     return render_template("board-detail", articles)
 
-    print("title : " + title)
-    print("url : " + url)
-    print("text : " + text)
-    print("tag : " + tag)
-
-    db.boards.update_one(articles)
-    return jsonify({"message" : "Success"})
-
-@board_blueprint.route('/delete', methods = ['POST'])
+@board_blueprint.route('/<board_id>/delete', methods = ['POST'])
 @check_token_expiry
 def delete(board_id) :
 
-    user_id = get_user_id()
-
-    board = db.boards.find_one({'_id' : board_id, 'user_id' : user_id})
+    board = db.boards.find_one({'_id' : board_id})
     if board :
         db.boards.delete_one({'_id' : board_id})
         return redirect('/')

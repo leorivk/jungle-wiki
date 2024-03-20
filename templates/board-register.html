@@ -77,16 +77,15 @@
                   </svg>
                   <select
                     class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+                    ,
+                    id="select_topic"
+                    ,
+                    name="tag"
                   >
-                    <option>Choose a color</option>
-                    <option>Red</option>
-                    <option>Blue</option>
-                    <option>Yellow</option>
-                    <option>Black</option>
-                    <option>Orange</option>
-                    <option>Purple</option>
-                    <option>Gray</option>
-                    <option>White</option>
+                    <option>Choose a topic</option>
+                    {% for topic in keywords %}
+                    <option value="{{ topic }}">{{ topic }}</option>
+                    {% endfor %}
                   </select>
                 </div>
 
@@ -105,19 +104,44 @@
                   </svg>
                   <select
                     class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+                    ,
+                    id="subtopic"
+                    ,
+                    name="subtag"
                   >
-                    <option>Choose a color</option>
-                    <option>Red</option>
-                    <option>Blue</option>
-                    <option>Yellow</option>
-                    <option>Black</option>
-                    <option>Orange</option>
-                    <option>Purple</option>
-                    <option>Gray</option>
-                    <option>White</option>
+                    <option value="">Choose a subtopic</option>
                   </select>
                 </div>
               </div>
+
+              <script>
+                const topicSelect = document.getElementById("select_topic");
+                const subtopicSelect = document.getElementById("subtopic");
+
+                subtopicSelect.innerHTML = "";
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "Choose a subtopic";
+                subtopicSelect.appendChild(defaultOption);
+
+                const keywords = {{ keywords|tojson }};
+
+                topicSelect.addEventListener("change", function () {
+                  const selectedTopic = this.value;
+                  console.log(selectedTopic);
+                  if (selectedTopic) {
+                    keywords[selectedTopic].forEach((tag) => {
+                      const option = document.createElement("option");
+                      option.value = tag;
+                      option.textContent = tag;
+                      subtopicSelect.appendChild(option);
+                    });
+                    subtopicSelect.disabled = false;
+                  } else {
+                    subtopicSelect.disabled = true;
+                  }
+                });
+              </script>
 
               <div class="pt-4 flex items-center space-x-4">
                 <button

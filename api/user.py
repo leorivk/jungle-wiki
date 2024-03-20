@@ -71,7 +71,7 @@ def login():
 
 @user_blueprint.route('/logout')
 def logout():
-    response = make_response(redirect(url_for('user.login')))
-    response.set_cookie('access_token', '', max_age=0)
-    response.set_cookie('refresh_token', '', max_age=0)
+    response = make_response(redirect(url_for('board.home')))
+    response.set_cookie('access_token', '', expires=0)
+    response.set_cookie('refresh_token', '', expires=0)
     return response

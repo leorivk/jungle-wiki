@@ -3,7 +3,7 @@ from bson import ObjectId
 from pymongo import errors
 
 from dotenv import load_dotenv
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for
 
 from db import db
 from decorator import check_token_expiry

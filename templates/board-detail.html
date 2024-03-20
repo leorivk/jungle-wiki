@@ -54,9 +54,12 @@
                                             </path>
                                         </svg>
                                     </div>
-                                </a>
+                                </button>
                     </form>
-                    <a class="cursor-pointer uppercase text-xs flex flex-row items-center justify-center font-semibold">
+                    <form method="get" action="/paste">
+                        <input type="hidden" name="board_id" value="{{ board_info._id }}">
+                    <button class="cursor-pointer uppercase text-xs flex flex-row items-center justify-center font-semibold"
+                        id="paste_button">
                         <div class="mr-2">
                             <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
                                 <path
@@ -65,7 +68,8 @@
                             </svg>
                         </div>
                         Copy link
-                    </a>
+                    </button>
+                </form>
                 </div>
             </div>
         </div>

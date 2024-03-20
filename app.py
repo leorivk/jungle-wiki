@@ -8,6 +8,7 @@ from api.board import board_blueprint
 from api.comment import comment_blueprint
 from api.user import user_blueprint
 from api.likes import likes_blueprint
+from api.paste_url import paste_blueprint
 from scrap.json_provider import CustomJSONProvider
 from utils.keywords import keywords
 
@@ -22,6 +23,7 @@ app.register_blueprint(user_blueprint)
 app.register_blueprint(board_blueprint)
 app.register_blueprint(comment_blueprint)
 app.register_blueprint(likes_blueprint)
+app.register_blueprint(paste_blueprint)
 
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # 실제 환경에서는 보안을 위해 환경변수 등에서 관리
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']  # JWT를 쿠키에서 로드하기 위한 설정

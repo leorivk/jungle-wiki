@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, redirect
+from bson import ObjectId
 
 from api.keywords import get_keywords
 from db import db
@@ -29,10 +30,7 @@ def create_page():
 def detail_page():
     return render_template("board-detail.html")
 
-@board_blueprint.route('/update', methods = ['GET'])
-@check_token_expiry
-def update_page():
-    return render_template("board-update.html")
+
 
 @board_blueprint.route('/create', methods = ['POST'])
 @check_token_expiry
@@ -42,14 +40,16 @@ def create() :
     title = request.form.get('title')
     url = request.form.get('url')
     text = request.form.get('text')
-    tag = request.form.get('tag')
+    tag1 = request.form.get('tag1')
+    tag2 = request.form.get('tag2')
 
     articles = {
         'user_id' : user_id,
         'title' : title,
         'url' : url,
         'text' : text,
-        'tag' : tag,
+        'tag1' : tag1,
+        'tag2' : tag2,
         "likes" : [
 
         ]
@@ -65,7 +65,10 @@ def create() :
     elif not text :
         error = '내용을 입력하세요'
         return render_template('board-register.html', error = error, **articles)
-    elif not tag :
+    elif not tag1 :
+        error = '태그를 입력하세요'
+        return render_template('board-register.html', error = error, **articles)
+    elif not tag2 :
         error = '태그를 입력하세요'
         return render_template('board-register.html', error = error, **articles)
 
@@ -77,69 +80,81 @@ def create() :
     print("title : " + title)
     print("url : " + url)
     print("text : " + text)
-    print("tag : " + tag)
+    print("tag : " + tag1 + " " + tag2)
 
     db.boards.insert_one(articles)
     return redirect('/')
 
-
-@board_blueprint.route('/read', methods = ['GET'])
-def read () :
-    board_list = list(boards.find({}, {'_id' : 0}))
-    return jsonify ({'boards' : board_list})
-
-
-@board_blueprint.route('/update/', methods = ['POST'])
+@board_blueprint.route('/update/<string:board_id>', methods=['GET', 'POST'])
 @check_token_expiry
-def update () :
+def update(board_id):
+    user_id = get_user_id()
+    
+    if request.method == 'GET':
+        board = db.boards.find_one({'_id': ObjectId(board_id)})
+        if not board:
+            return "게시글이 존재하지 않습니다."
+        return render_template("board-update.html", board_info=board)
+    
+    elif request.method == 'POST':
+        title = request.form.get('title')
+        url = request.form.get('url')
+        text = request.form.get('text')
+        tag1 = request.form.get('tag1')
+        tag2 = request.form.get('tag2')
+        
+        articles = {
+            'user_id': user_id,
+            'title': title,
+            'url': url,
+            'text': text,
+            'tag1': tag1,
+            'tag2': tag2,
+            "likes": []
+        }
 
-    title = request.form.get('title')
-    if not title :
-        return jsonify ({'error' : '제목이 없습니다.'}), 400
+        if not title:
+            error = '제목을 입력하세요'
+            return render_template('board-update.html', error=error, **articles)
+        elif not url:
+            error = '링크를 입력하세요'
+            return render_template('board-update.html', error=error, **articles)
+        elif not text:
+            error = '내용을 입력하세요'
+            return render_template('board-update.html', error=error, **articles)
+        elif not tag1 or not tag2:
+            error = '태그를 입력하세요'
+            return render_template('board-update.html', error=error, **articles)
+        else:
+            db.boards.update_one(
+                {'_id': ObjectId(board_id)},
+                {'$set': {
+                    'title': title,
+                    'url': url,
+                    'text': text,
+                    'tag1': tag1,
+                    'tag2': tag2
+                }})
+            return redirect('/')
+    
+        
 
-    url = request.form.get('url')
-    if not url :
-        return jsonify ({'error' : '링크가 없습니다.'}), 400
 
-    text = request.form.get('text')
-    if not url :
-        return jsonify ({'error' : '내용이 없습니다.'}), 400
 
-    tag = request.form.get('tag')
-    if not url :
-        return jsonify ({'error' : '태그가 없습니다.'}), 400
 
-    articles = {
-        'title' : title,
-        'url' : url,
-        'text' : text,
-        'tag' : tag,
-    }
-
-    print("title : " + title)
-    print("url : " + url)
-    print("text : " + text)
-    print("tag : " + tag)
-
-    db.boards.update_one(articles)
-    return jsonify({"message" : "Success"})
-
-@board_blueprint.route('/delete', methods = ['POST'])
+@board_blueprint.route('/delete/<string:board_id>', methods=['POST'])
 @check_token_expiry
-def delete(board_id) :
-
+def delete(board_id):
     user_id = get_user_id()
 
-    board = db.boards.find_one({'_id' : board_id, 'user_id' : user_id})
-    if board :
-        db.boards.delete_one({'_id' : board_id})
+    board = db.boards.find_one({'_id': ObjectId(board_id), 'user_id': user_id})
+    if board:
+        db.boards.delete_one({'_id': ObjectId(board_id)})
         return redirect('/')
     else:
-        return redirect('/login')
+        return "해당 게시글을 삭제할 수 있는 권한이 없습니다.", 403  # 403 Forbidden 에러 반환
 
-    title = request.form.get('title')
-    db.boards.delete_one({'title' : title})
-    return redirect('/')
+
 
 
 def get_user_id():

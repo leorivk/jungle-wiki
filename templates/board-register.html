@@ -8,7 +8,7 @@
 {% include 'sidebar.html' %}
 {% include 'header.html' %}
 
-<div class="p-4 sm:ml-64 h-screen py-6 flex flex-col justify-center sm:py-12">
+<div class="p-4 sm:ml-80 h-screen py-6 flex flex-col sm:py-12">
     <div class="w-4/5 relative py-3 sm:max-w-xl sm:mx-auto">
         <div class="relative px-4 py-10 bg-white mx-8 md:mx-0 rounded-3xl sm:p-10">
             <div class="max-w-md mx-auto">
@@ -43,7 +43,7 @@
                            <div class="flex flex-col">
                              <label class="leading-loose">주제</label>
                              <select id="select_topic" name="tag" class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
-                                <option>Choose a topic</option>
+                                <option value="None">Choose a topic</option>
                                 {%  for topic in keywords %}
                                    <option value="{{ topic }}">{{ topic }}</option>
                                 {% endfor %}
@@ -57,6 +57,7 @@
                              </select>
                            </div>
                         </div>
+                    </div>
 
                     <div class="pt-4 flex items-center space-x-4">
                       <button type="button" onclick="window.location.href='/'" class="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none">
@@ -70,7 +71,7 @@
                       </button>
                     </div>
 
-            </form>
+                </form>
           </div>
         </div>
       </div>

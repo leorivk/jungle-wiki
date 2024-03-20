@@ -9,7 +9,7 @@
 {% include 'sidebar.html' %}
 {% include 'header.html' %}
 
-<div class="p-4 sm:ml-64 flex flex-col items-center">
+<div class="p-4 sm:ml-80 flex flex-col items-center">
     <div class="flex flex-col border rounded-lg overflow-hidden bg-white w-4/5">
         <div class="flex flex-row border-b">
             <div class="w-1/4 flex flex-col border-b sm:border-b-0 items-center p-8 sm:px-4 sm:h-full sm:justify-center">
@@ -101,9 +101,9 @@
 
     <!--  댓글 입력창  -->
     <div class="flex justify-center items-center w-full bg-white mt-8">
-        <form action="/comment" method="POST">
+        <form action="/comment" method="POST" class="w-4/5">
             <input id="board_id" name="board_id" value={{board_id}} hidden/>
-            <textarea id="contents" name="contents" placeholder="Add your comment..." class="p-2 focus:outline-1 focus:outline-blue-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md w-[60vw]"></textarea>
+            <textarea id="contents" name="contents" placeholder="Add your comment..." class="p-2 focus:outline-1 focus:outline-blue-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md w-full"></textarea>
             <div class="flex justify-end">
                 <button type="submit" class="text-sm font-semibold absolute bg-purple-700 w-fit text-white py-2 rounded px-3">Post</button>
             </div>

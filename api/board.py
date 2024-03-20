@@ -33,7 +33,7 @@ def create():
         title = request.form.get('title')
         url = request.form.get('url')
         text = request.form.get('text')
-        tag = request.form.get('tag'),
+        tag = request.form.get('tag')
         subtag = request.form.get('subtag')
 
         error = None
@@ -55,7 +55,7 @@ def create():
             'url': url,
             'text': text,
             'tag': tag,
-            'subtag' : subtag,
+            'subtag': subtag,
             "liked_users": [],
             "like_cnt": 0,
             "comment_cnt": 0
@@ -75,8 +75,6 @@ def create():
 @board_blueprint.route('/update/<string:board_id>', methods=['GET', 'POST'])
 @check_token_expiry
 def update(board_id):
-    user_id = get_user_id()
-
     if request.method == 'GET':
         board = db.boards.find_one({'_id': ObjectId(board_id)})
         if not board:
@@ -87,31 +85,21 @@ def update(board_id):
         title = request.form.get('title')
         url = request.form.get('url')
         text = request.form.get('text')
-        tag1 = request.form.get('tag1')
-        tag2 = request.form.get('tag2')
-
-        articles = {
-            'user_id': user_id,
-            'title': title,
-            'url': url,
-            'text': text,
-            'tag1': tag1,
-            'tag2': tag2,
-            "likes": []
-        }
+        tag = request.form.get('tag')
+        subtag = request.form.get('subtag')
 
         if not title:
             error = '제목을 입력하세요'
-            return render_template('board-update.html', error=error, **articles)
+            return render_template('board-update.html', error=error)
         elif not url:
             error = '링크를 입력하세요'
-            return render_template('board-update.html', error=error, **articles)
+            return render_template('board-update.html', error=error)
         elif not text:
             error = '내용을 입력하세요'
-            return render_template('board-update.html', error=error, **articles)
-        elif not tag1 or not tag2:
+            return render_template('board-update.html', error=error)
+        elif not tag or not subtag:
             error = '태그를 입력하세요'
-            return render_template('board-update.html', error=error, **articles)
+            return render_template('board-update.html', error=error)
         else:
             db.boards.update_one(
                 {'_id': ObjectId(board_id)},
@@ -119,8 +107,8 @@ def update(board_id):
                     'title': title,
                     'url': url,
                     'text': text,
-                    'tag1': tag1,
-                    'tag2': tag2
+                    'tag': tag,
+                    'subtag': subtag
                 }})
             return redirect('/')
 

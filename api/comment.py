@@ -30,10 +30,11 @@ def comment_create():
     user_info = users.find_one({'id': user_id})
 
     board_id = request.form.get('board_id')
-    board_info = boards.find({'_id': ObjectId(board_id)})
+    board_info = boards.find_one({'_id': ObjectId(board_id)})
 
     contents = request.form.get('contents')
 
+    print(board_info['comment_cnt'])
     new_commnet_cnt = board_info['comment_cnt'] + 1
     boards.update_one({'_id': ObjectId(board_id)}, {'$set': {'comment_cnt': new_commnet_cnt}})
 

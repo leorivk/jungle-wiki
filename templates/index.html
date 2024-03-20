@@ -17,7 +17,9 @@
           <div class="flex flex-row">
 
             <div class="w-1/4 flex flex-col border-b sm:border-b-0 items-center p-8 sm:px-4 sm:h-full sm:justify-center">
-              <img src= "{{ board.image_url }}" alt="Board Image">
+              <a href="{{ board.url }}">
+                <img src= "{{ board.image_url }}" alt="Board Image">
+              </a>
             </div>
 
             <div class="w-3/4 flex flex-col sm:border-l col-span-3">
@@ -54,7 +56,9 @@
                 <div class="flex flex-row text-sm">
                   <p class="flex items-center text-gray-500">
                     <span class="font-semibold mr-2 text-xs uppercase">URL:</span>
-                    <span>{{board.url}}</span>
+                    <a href="{{ board.url }}">
+                      <span>{{board.url}}</span>
+                    </a>
                   </p>
                 </div>
 

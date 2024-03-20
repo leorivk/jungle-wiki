@@ -41,7 +41,10 @@ def comment_create():
     return redirect('/board/' + board_id)
 
 @comment_blueprint.route('/comment/delete', methods = ['POST'])
-def comment_delete(board_id, comment_id):
-    comments.delete_one({'_id': comment_id})
+def comment_delete():
+    board_id = request.form.get('board_id')
+
+    comment_id = request.form.get('comment_id')
+    comments.delete_one({'_id': ObjectId(comment_id)})
 
     return redirect('/board/' + board_id)

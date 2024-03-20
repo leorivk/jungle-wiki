@@ -2,9 +2,7 @@ from flask import Blueprint, jsonify, request, render_template, redirect, url_fo
 from db import db
 from flask_jwt_extended import create_access_token, create_refresh_token
 
-import jwt
 import bcrypt
-import datetime
 
 from dotenv import load_dotenv
 import os
@@ -12,9 +10,7 @@ import os
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-
 user_blueprint = Blueprint('user', __name__)
-
 users = db["users"]
 
 @user_blueprint.route('/join', methods=['GET'])

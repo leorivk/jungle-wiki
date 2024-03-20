@@ -2,33 +2,21 @@
 크래프톤 정글 0주차 미니 프로젝트
 
 
----
-### 프로젝트 세팅
-1. flask
+# AWS 배포 시
+1. pip 설치  
+![img_1.png](img_1.png)
+2. node 설치  
+![img.png](img.png)
+
+3. 파이썬 dependency 설치
 ```
     python -m pip install Flask
 ```
-2. tailwind
+4. 노드 dependency 설치
 ```
-    npm install -D tailwindcss
+    npm install
 ```
+5. tailwind css 생성
 ```
-    npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/output.css --watch
+    npx tailwindcss -i ./static/src/input.css -o ./static/dist/css/output.css
 ```
-3. 환경변수
-```
-    pip install python-dotenv
-```
-4. 가상환경
-- 가상환경 들어가기
-```
-    source venv/bin/activate 
-``` 
-    
-- 가상환경 나오기
-```
-    deactivate
-```
-
-# AWS 배포 시
-1. 

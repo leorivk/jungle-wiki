@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from db import db
 from decorator import check_token_expiry
 from utils.jwt_utils import get_user_id, is_my_board, is_like_board
+from utils.login_auth import is_logged_in
 
 from scrap import scrap_image
 
@@ -30,6 +31,9 @@ def home():
 @check_token_expiry
 def create():
     if request.method == 'GET':
+        if not is_logged_in():
+            return redirect("/login")
+
         return render_template("board-register.html")
 
     elif request.method == 'POST':

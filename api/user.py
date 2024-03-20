@@ -4,7 +4,6 @@ import bcrypt
 from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, make_response
 from flask_jwt_extended import create_access_token, create_refresh_token
-from datetime import datetime, timedelta
 
 from db import db
 

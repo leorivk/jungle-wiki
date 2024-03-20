@@ -8,8 +8,6 @@ from decorator import check_token_expiry
 from dotenv import load_dotenv
 import os
 
-from api.keywords import get_keywords
-
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
@@ -19,7 +17,8 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    return render_template("index.html")
+    keywords = get_keywords()
+    return render_template("index.html", keywords=keywords)
 
 @board_blueprint.route('/create', methods = ['GET'])
 @check_token_expiry
@@ -137,11 +136,6 @@ def delete(board_id) :
         return redirect('/')
     else:
         return redirect('/login')
-
-    title = request.form.get('title')
-    db.boards.delete_one({'title' : title})
-    return redirect('/')
-
 
 def get_user_id():
     token = request.cookies.get('user_token')

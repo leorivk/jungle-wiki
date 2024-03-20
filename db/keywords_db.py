@@ -1,7 +1,5 @@
-from __init__ import db
-
 data = {
-    "cs" : {
+    "CS 기초" : {
         "order" : 1,
         "tags" : [
             "32 Bit / 64 Bit 차이",
@@ -16,7 +14,7 @@ data = {
             "SSD, HDD",
         ]
     },
-    "al&ds" : {
+    "Algorithm 및 Data Structure" : {
         "order" : 2,
         "tags" : [
             "시간 복잡도(Big-oh Notation)",
@@ -31,14 +29,14 @@ data = {
             "균형 이진 트리(Balanced BST) ex. AVL, RBTree",
         ]
     },
-    "malloclab" : {
+    "malloc lab" : {
         "order" : 3,
         "tags" : [
             "implicit, explicit, seglist, buddy system",
             "Fragmentation(internal, external)"
         ]
     },
-    "network" : {
+    "네트워크" : {
         "order" : 4,
         "tags" : [
             "BSD 소켓",
@@ -50,7 +48,7 @@ data = {
             "CDN",
         ]
     },
-    "os" : {
+    "OS" : {
         "order" : 5,
         "tags" : [
             "OS의 정의",
@@ -73,7 +71,7 @@ data = {
             "핀토스 관련 공부 키워드",
         ]
     },
-    "db" : {
+    "DB" : {
         "order" : 6,
         "tags" : [
             "관계형 DB와 No-SQL DB",
@@ -81,7 +79,7 @@ data = {
             "B Tree, B+ Tree",
         ]
     },
-    "javascript" : {
+    "Javascript" : {
         "order" : 7,
         "tags" : [
             "Asynchronous I/O: 반대말 Synchronous I/O",
@@ -90,7 +88,7 @@ data = {
             "package-lock.json",
         ]
     },
-    "pw_security" : {
+    "암호 보안" : {
         "order" : 8,
         "tags" : [
             "암호 알고리즘: 비밀키 암호, 공개키 암호, Secure Hash",
@@ -99,7 +97,7 @@ data = {
             "무료 TLS/SSL certificate 발급"
         ]
     },
-    "http&security" : {
+    "HTTP & Security" : {
         "order" : 9,
         "tags" : [
             "HTTP, HTTPS, Mixed content",
@@ -109,7 +107,7 @@ data = {
             "Code Injection",
         ]
     },
-    "member_management" : {
+    "회원 관리" : {
         "order" : 10,
         "tags" : [
             "OAuth2",
@@ -118,7 +116,3 @@ data = {
     }
     
 }
-
-keywords = db["keywords"]
-for key, value in data.items():
-    keywords.insert_one({**value, "key": key})

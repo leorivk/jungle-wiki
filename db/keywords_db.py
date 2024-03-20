@@ -1,7 +1,5 @@
 from __init__ import db
 
-keywords = db["keywords"]
-
 data = {
     "cs" : {
         "order" : 1,
@@ -121,5 +119,6 @@ data = {
     
 }
 
+keywords = db["keywords"]
 for key, value in data.items():
     keywords.insert_one({**value, "_id": key})

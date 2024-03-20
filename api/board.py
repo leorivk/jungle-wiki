@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 
 from db import db
-from decorator.decorator import check_token_expiry
+from decorator import check_token_expiry
 from utils.jwt_utils import get_user_id
 
 load_dotenv()

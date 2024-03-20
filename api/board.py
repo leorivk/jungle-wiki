@@ -3,7 +3,7 @@ from bson import ObjectId
 from pymongo import errors
 
 from dotenv import load_dotenv
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for
 
 from db import db
 from decorator import check_token_expiry
@@ -18,6 +18,9 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
+    # ######################### 테스트 끝나면 삭제
+    # boards.delete_many({})
+    # #########################
     board_list = boards.find({})
     return render_template("index.html", board_list=board_list)
 

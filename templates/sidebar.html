@@ -53,25 +53,29 @@
         <div
           class="flex border-2 border-gray-200 rounded-md focus-within:ring-2 ring-teal-500 mb-6"
         >
-          <input
-            type="text"
-            class="w-full rounded-tl-md rounded-bl-md px-2 py-3 text-sm text-gray-600 focus:outline-none"
-            placeholder="Search"
-          />
-          <button class="rounded-tr-md rounded-br-md px-2 py-3 hidden md:block">
-            <svg
-              class="w-4 h-4 fill-current"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd"
-              ></path>
-            </svg>
-          </button>
+          <form action="/search" method="GET">
+            <input
+              id="searchInput"
+              type="text"
+              name="keyword"
+              class="w-full rounded-tl-md rounded-bl-md px-2 py-3 text-sm text-gray-600 focus:outline-none"
+              placeholder="Search"
+            />
+            <button id="searchBtn" class="rounded-tr-md rounded-br-md px-2 py-3 hidden md:block">
+              <svg
+                class="w-4 h-4 fill-current"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </button>
+          </form>
         </div>
 
         <!--    sidebar menu    -->
@@ -133,3 +137,17 @@
     </aside>
   </body>
 </html>
+
+
+<script>
+document.getElementById('searchBtn').addEventListener('click', function() {
+    e.preventDefault;
+    const searchInput = document.getElementById('searchInput').value;
+    if (!searchInput.trim()) { // 검색어 입력이 비어 있거나 공백만 있는 경우
+        e.preventDefault(); // 폼 제출 막기
+        alert('검색어를 입력해주세요.'); // 사용자에게 알림
+        return false;
+    }
+    document.getElementById("searchInput").value = ''
+});
+</script>

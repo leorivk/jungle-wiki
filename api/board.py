@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 
 from db import db
 from decorator import check_token_expiry
-from utils.jwt_utils import get_user_id
+from utils.jwt_utils import get_user_id, is_my_board
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -18,7 +18,9 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    board_list = boards.find({})
+    board_list = list(boards.find({}).sort([("like_cnt", -1), ("comment_cnt", -1)]))
+    for board in board_list:
+        board['is_my_board'] = is_my_board(board['user_id'])
     return render_template("index.html", board_list=board_list)
 
 @board_blueprint.route('/create', methods = ['GET', 'POST'])
@@ -112,14 +114,14 @@ def update(board_id):
                 }})
             return redirect('/')
 
-@board_blueprint.route('/delete/<string:board_id>', methods=['POST'])
+@board_blueprint.route('/delete', methods=['POST'])
 @check_token_expiry
-def delete(board_id):
-    user_id = get_user_id()
+def delete():
+    board_id = request.form.get('board_id')
 
-    board = db.boards.find_one({'_id': ObjectId(board_id), 'user_id': user_id})
+    board = boards.find_one({'_id': ObjectId(board_id)})
     if board:
-        db.boards.delete_one({'_id': ObjectId(board_id)})
+        boards.delete_one({'_id': ObjectId(board_id)})
         return redirect('/')
     else:
         return "해당 게시글을 삭제할 수 있는 권한이 없습니다.", 403  # 403 Forbidden 에러 반환

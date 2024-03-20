@@ -17,8 +17,6 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    data = boards.find({})
-    print(list(data))
     return render_template("index.html")
 
 @board_blueprint.route('/create', methods = ['GET'])

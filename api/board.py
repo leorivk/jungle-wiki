@@ -22,59 +22,53 @@ def home():
     print(list(data))
     return render_template("index.html")
 
-@board_blueprint.route('/create', methods = ['GET'])
-@check_token_expiry
-def create_page():
-    return render_template("board-register.html")
-
-@board_blueprint.route('/update', methods = ['GET'])
-@check_token_expiry
-def update_page():
-    return render_template("board-update.html")
-
-@board_blueprint.route('/create', methods = ['POST'])
+@board_blueprint.route('/create', methods = ['GET', 'POST'])
 @check_token_expiry
 def create():
-    user_id = get_user_id()
+    if request.method == 'GET':
+        return render_template("board-register.html")
 
-    title = request.form.get('title')
-    url = request.form.get('url')
-    text = request.form.get('text')
-    tag = request.form.get('tag'),
-    subtag = request.form.get('subtag')
+    elif request.method == 'POST':
+        user_id = get_user_id()
 
-    error = None
-    if not title :
-        error = '제목을 입력하세요'
-    elif not url :
-        error = '링크를 입력하세요'
-    elif not text :
-        error = '내용을 입력하세요'
-    elif not tag :
-        error = '태그를 입력하세요'
+        title = request.form.get('title')
+        url = request.form.get('url')
+        text = request.form.get('text')
+        tag = request.form.get('tag'),
+        subtag = request.form.get('subtag')
 
-    if error:
-        return render_template('board-register.html', error=error)
+        error = None
+        if not title :
+            error = '제목을 입력하세요'
+        elif not url :
+            error = '링크를 입력하세요'
+        elif not text :
+            error = '내용을 입력하세요'
+        elif not tag :
+            error = '태그를 입력하세요'
 
-    articles = {
-        'user_id': user_id,
-        'title': title,
-        'url': url,
-        'text': text,
-        'tag': tag,
-        'subtag' : subtag,
-        "likes": []
-    }
+        if error:
+            return render_template('board-register.html', error=error)
 
-    try:
-        boards.insert_one(articles)
-    except errors.DuplicateKeyError:
-        print("Duplicate user_id. Can't insert the article.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+        articles = {
+            'user_id': user_id,
+            'title': title,
+            'url': url,
+            'text': text,
+            'tag': tag,
+            'subtag' : subtag,
+            "likes": []
+        }
 
-    board_id = boards["_id"]
-    return redirect(url_for('board.home', board_id = board_id))
+        try:
+            boards.insert_one(articles)
+        except errors.DuplicateKeyError:
+            print("Duplicate user_id. Can't insert the article.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+        board_id = boards["_id"]
+        return redirect(url_for('board.home', board_id = board_id))
 
 
 @board_blueprint.route('/update/<string:board_id>', methods=['GET', 'POST'])
@@ -128,11 +122,6 @@ def update(board_id):
                     'tag2': tag2
                 }})
             return redirect('/')
-
-
-
-
-
 
 @board_blueprint.route('/delete/<string:board_id>', methods=['POST'])
 @check_token_expiry

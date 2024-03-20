@@ -25,51 +25,104 @@
                 </p>
               </div>
             </div>
-            <div>
-              <div
-                class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
-              >
+            {% if error %}
+            <p style="color: red">{{ error }}</p>
+            {% endif %}
+            <form method="post" action="/create">
+              <div class="flex flex-col">
+                <label class="leading-loose">게시글 제목</label>
+                <input
+                  type="text"
+                  name="title"
+                  class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                  placeholder="게시글 제목"
+                  value="{{ title }}"
+                />
+              </div>
+              <div class="flex flex-col">
+                <label class="leading-loose">블로그 URL</label>
+                <input
+                  type="url"
+                  name="url"
+                  class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                  placeholder="블로그 URL"
+                  value="{{ url }}"
+                />
+              </div>
+              <div class="flex flex-col">
+                <label class="leading-loose">게시글 설명</label>
+                <input
+                  type="text"
+                  name="text"
+                  class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
+                  placeholder="게시글 설명"
+                  value="{{ text }}"
+                />
+              </div>
+
+              <!--       태크      -->
+              <div class="flex flex-row justify-between">
                 <div class="flex flex-col">
-                  <label class="leading-loose">게시글 제목</label>
-                  <input
-                    type="text"
-                    required
-                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                    placeholder="Event title"
-                  />
-                </div>
-                <div class="flex flex-col">
-                  <label class="leading-loose">블로그 URL</label>
-                  <input
-                    type="text"
-                    required
-                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                    placeholder="Optional"
-                  />
+                  <label class="leading-loose">주제</label>
+                  <svg
+                    class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 412 232"
+                  >
+                    <path
+                      d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                      fill="#648299"
+                      fill-rule="nonzero"
+                    />
+                  </svg>
+                  <select
+                    class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+                  >
+                    <option>Choose a color</option>
+                    <option>Red</option>
+                    <option>Blue</option>
+                    <option>Yellow</option>
+                    <option>Black</option>
+                    <option>Orange</option>
+                    <option>Purple</option>
+                    <option>Gray</option>
+                    <option>White</option>
+                  </select>
                 </div>
 
                 <div class="flex flex-col">
-                  <label class="leading-loose">게시글 설명</label>
-                  <input
-                    type="text"
-                    required
-                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                    placeholder="Optional"
-                  />
-                </div>
-
-                <div class="flex flex-col">
-                  <label class="leading-loose">태그</label>
-                  <input
-                    type="text"
-                    required
-                    class="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
-                    placeholder="Optional"
-                  />
+                  <label class="leading-loose">부주제</label>
+                  <svg
+                    class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 412 232"
+                  >
+                    <path
+                      d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
+                      fill="#648299"
+                      fill-rule="nonzero"
+                    />
+                  </svg>
+                  <select
+                    class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+                  >
+                    <option>Choose a color</option>
+                    <option>Red</option>
+                    <option>Blue</option>
+                    <option>Yellow</option>
+                    <option>Black</option>
+                    <option>Orange</option>
+                    <option>Purple</option>
+                    <option>Gray</option>
+                    <option>White</option>
+                  </select>
                 </div>
               </div>
+
               <div class="pt-4 flex items-center space-x-4">
                 <button
+                  type="button"
+                  onclick="window.location.href='/#'"
                   class="flex justify-center items-center w-full text-gray-900 px-4 py-3 rounded-md focus:outline-none"
                 >
                   <svg
@@ -89,12 +142,13 @@
                   Cancel
                 </button>
                 <button
+                  type="submit"
                   class="bg-blue-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none"
                 >
                   작성 완료
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

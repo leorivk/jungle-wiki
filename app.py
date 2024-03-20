@@ -7,6 +7,7 @@ from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
 from api.board import board_blueprint
 from api.comment import comment_blueprint
 from api.user import user_blueprint
+from api.likes import likes_blueprint
 from api.search import search_blueprint
 from scrap.json_provider import CustomJSONProvider
 from utils.keywords import keywords
@@ -21,6 +22,7 @@ app.json = CustomJSONProvider(app)
 app.register_blueprint(user_blueprint)
 app.register_blueprint(board_blueprint)
 app.register_blueprint(comment_blueprint)
+app.register_blueprint(likes_blueprint)
 app.register_blueprint(search_blueprint)
 
 app.config['JWT_SECRET_KEY'] = 'your_secret_key'  # 실제 환경에서는 보안을 위해 환경변수 등에서 관리
@@ -68,4 +70,5 @@ def inject_logged_in():
     print(is_logged_in)
     return dict(logged_in=is_logged_in)
 
-if __name__ == '__main__':    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

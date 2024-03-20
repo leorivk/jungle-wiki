@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, redirect, request, make_response
-from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 
 from api.board import board_blueprint
 from api.comment import comment_blueprint
@@ -31,27 +31,24 @@ app.config['JWT_COOKIE_CSRF_PROTECT'] = True  # CSRF 보호 활성화 (기본값
 jwt = JWTManager(app)
 
 @app.route('/refresh', methods=['POST'])
-@jwt
+@jwt_required(fresh=False) 
 def refresh():
-    refresh_token = request.cookies.get("refresh_token")
-    if not refresh_token:
-        return redirect("/logout")
-    
     try:
         current_user = get_jwt_identity()
-        new_token = create_access_token(identity=current_user)
+        new_token = create_access_token(identity=current_user, fresh=False)
 
         previous = request.referrer
-        
         if previous is None:
             previous = "/"
-        
+
         response = make_response(redirect(previous))
-        response.set_cookie('user_token', new_token)
-        
+        response.set_cookie('access_token', new_token, max_age=60*60*24, httponly=True)  # 쿠키의 이름과 max_age 설정
+
         return response
-    except:
-        return redirect("/")
+    except Exception as e:
+        app.logger.error(f"Token refresh error: {e}")
+        return redirect("/logout")
+
         
 @app.context_processor
 def inject_keywords():

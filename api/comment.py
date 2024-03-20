@@ -28,8 +28,14 @@ def board_detail_page(board_id):
 def comment_create():
     user_id = get_user_id()
     user_info = users.find_one({'id': user_id})
+
     board_id = request.form.get('board_id')
+    board_info = boards.find({'_id': ObjectId(board_id)})
+
     contents = request.form.get('contents')
+
+    new_commnet_cnt = board_info['comment_cnt'] + 1
+    boards.update_one({'_id': ObjectId(board_id)}, {'$set': {'comment_cnt': new_commnet_cnt}})
 
     comments.insert_one({
         'user_id': user_id,

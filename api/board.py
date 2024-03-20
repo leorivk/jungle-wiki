@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 
 from db import db
-from decorator.decorator import check_token_expiry
+from decorator import check_token_expiry
 from utils.jwt_utils import get_user_id
 
 load_dotenv()
@@ -18,9 +18,8 @@ boards = db["boards"]
 
 @board_blueprint.route("/")
 def home():
-    data = boards.find({})
-    print(list(data))
-    return render_template("index.html")
+    board_list = boards.find({})
+    return render_template("index.html", board_list=board_list)
 
 @board_blueprint.route('/create', methods = ['GET', 'POST'])
 @check_token_expiry
@@ -57,7 +56,9 @@ def create():
             'text': text,
             'tag': tag,
             'subtag' : subtag,
-            "likes": []
+            "liked_users": [],
+            "like_cnt": 0,
+            "comment_cnt": 0
         }
 
         try:

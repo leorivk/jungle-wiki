@@ -4,6 +4,7 @@ import bcrypt
 from dotenv import load_dotenv
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for, make_response
 from flask_jwt_extended import create_access_token, create_refresh_token
+from datetime import datetime, timedelta
 
 from db import db
 
@@ -62,14 +63,15 @@ def login():
     access_token = create_access_token(identity=user_id)
     refresh_token = create_refresh_token(identity=user_id)
 
-    response = make_response(render_template("index.html", logged_in = True))
-    response.set_cookie('access_token', access_token)
-    response.set_cookie('refresh_token', refresh_token)
+    response = make_response(redirect(url_for('board.home')))
+    response.set_cookie('access_token', access_token, max_age=60*60*24, httponly=True)  # 1일
+    response.set_cookie('refresh_token', refresh_token, max_age=60*60*24*30, httponly=True)  # 30일
 
     return response
 
-@user_blueprint.route("/logout")
+@user_blueprint.route('/logout')
 def logout():
-    response = make_response(render_template("index.html", logged_in=False))
-    response.set_cookie('access_token', '', expires=0)
-    return redirect("/")
+    response = make_response(redirect(url_for('user.login')))
+    response.set_cookie('access_token', '', max_age=0)
+    response.set_cookie('refresh_token', '', max_age=0)
+    return response

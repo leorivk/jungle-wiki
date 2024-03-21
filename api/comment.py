@@ -42,7 +42,6 @@ def comment_create():
 
     contents = request.form.get('contents')
 
-    print(board_info['comment_cnt'])
     new_commnet_cnt = board_info['comment_cnt'] + 1
     boards.update_one({'_id': ObjectId(board_id)}, {'$set': {'comment_cnt': new_commnet_cnt}})
 
@@ -60,6 +59,10 @@ def comment_delete():
     board_id = request.form.get('board_id')
 
     comment_id = request.form.get('comment_id')
+
+    board_info = boards.find_one({'_id': ObjectId(board_id)})
+    boards.update_one({'_id': ObjectId(board_id)}, {'$set': {'comment_cnt' : board_info['commnet_cnt'] - 1}})
+
     comments.delete_one({'_id': ObjectId(comment_id)})
 
     return redirect('/board/' + board_id)

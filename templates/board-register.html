@@ -79,18 +79,12 @@
     const topicSelect = document.getElementById("select_topic");
     const subtopicSelect = document.getElementById("subtopic");
 
-    subtopicSelect.innerHTML = "";
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Choose a subtopic";
-    subtopicSelect.appendChild(defaultOption);
-
-    const keywords = {{ keywords|tojson }};
+    var keywords = {{ keywords | tojson }};
 
     topicSelect.addEventListener("change", function () {
         const selectedTopic = this.value;
-        console.log(selectedTopic);
         if (selectedTopic) {
+            subtopicSelect.innerHTML = ""
             keywords[selectedTopic].forEach((tag) => {
                 const option = document.createElement("option");
                 option.value = tag;
@@ -98,8 +92,6 @@
                 subtopicSelect.appendChild(option);
             });
             subtopicSelect.disabled = false;
-        } else {
-            subtopicSelect.disabled = true;
         }
     });
 </script>

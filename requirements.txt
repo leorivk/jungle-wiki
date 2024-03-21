@@ -9,3 +9,4 @@ jinja2
 requests
 flask_jwt_extended
 clipboard
+pyperclip

@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
+  <style>
+    .over_text {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  </style>
   <body>
     {% include 'sidebar.html' %}
     {% include 'header.html' %}
@@ -54,7 +61,7 @@
                 </div>
 
                 <div class="flex flex-row text-sm">
-                  <p class="flex items-center text-gray-500">
+                  <p class="text-gray-500 over_text">
                     <span class="font-semibold mr-2 text-xs uppercase">URL:</span>
                     <a href="{{ board.url }}">
                       <span>{{board.url}}</span>

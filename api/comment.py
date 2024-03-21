@@ -61,7 +61,7 @@ def comment_delete():
     comment_id = request.form.get('comment_id')
 
     board_info = boards.find_one({'_id': ObjectId(board_id)})
-    boards.update_one({'_id': ObjectId(board_id)}, {'$set': {'comment_cnt' : board_info['commnet_cnt'] - 1}})
+    boards.update_one({'_id': ObjectId(board_id)}, {'$set': {'comment_cnt' : board_info['comment_cnt'] - 1}})
 
     comments.delete_one({'_id': ObjectId(comment_id)})
 

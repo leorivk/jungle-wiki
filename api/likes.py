@@ -27,27 +27,28 @@ def like():
     if not user_id:
         return redirect('/login')
 
-    
-    if board_info['liked_users'] and user_id in board_info['liked_users']:
+    liked_list = []
+    if board_info['liked_users']:
+        liked_list = board_info['liked_users']
+
+    if user_id in liked_list:
         new_like_cnt = board_info['like_cnt'] - 1
-        liked_users = board_info['liked_users'].remove(user_id)
+        liked_list.remove(user_id)
         db.boards.update_one(
             {'_id': ObjectId(board_id)},
             {'$set': {
                 'like_cnt' : new_like_cnt,
-                'liked_users': liked_users
+                'liked_users': liked_list
             }}
         )
     else:
         new_like_cnt = board_info['like_cnt'] + 1
-        liked_users = []
-        liked_users.append(board_info['liked_users'])
-        liked_users.append(user_id)
+        liked_list.append(user_id)
         db.boards.update_one(
             {'_id': ObjectId(board_id)},
             {'$set': {
                 'like_cnt' : new_like_cnt,
-                'liked_users': liked_users
+                'liked_users': liked_list
             }}
         )
 

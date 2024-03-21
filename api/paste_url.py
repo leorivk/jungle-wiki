@@ -2,10 +2,9 @@ import os
 import clipboard
 from bson import ObjectId
 from dotenv import load_dotenv
-from flask import Blueprint, render_template, redirect, request, url_for, jsonify
+from flask import Blueprint, redirect, request
 
 from db import db
-from utils.jwt_utils import get_user_id
 
 load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')

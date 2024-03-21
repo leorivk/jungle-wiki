@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      #board_url{
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+    </style>
   </head>
   <body>
     {% include 'sidebar.html' %}
@@ -57,7 +64,7 @@
                   <p class="flex items-center text-gray-500">
                     <span class="font-semibold mr-2 text-xs uppercase">URL:</span>
                     <a href="{{ board.url }}">
-                      <span>{{board.url}}</span>
+                      <span id="board_url">{{board.url}}</span>
                     </a>
                   </p>
                 </div>

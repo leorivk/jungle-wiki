@@ -32,6 +32,7 @@ app.register_blueprint(auth_blueprint)
 app.register_blueprint(paste_blueprint)
 
 app.context_processor(inject_template_globals)
+app.jinja_env.add_extension('jinja2.ext.loopcontrols')
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', port=5000, debug=True)
+    app.run('0.0.0.0', port=5001, debug=True)

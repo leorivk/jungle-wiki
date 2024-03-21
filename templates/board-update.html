@@ -55,7 +55,11 @@
                                     <select id="select_topic" name="tag" class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
                                         <option value="{{board_info.tag}}">{{board_info.tag}}</option>
                                         {%  for topic in keywords %}
-                                            <option value="{{ topic }}">{{ topic }}</option>
+                                            {% if board_info.tag == topic %}
+                                                {% continue %}
+                                            {% else %}
+                                                <option value="{{ topic }}">{{ topic }}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -63,7 +67,9 @@
                                 <div class="flex flex-col">
                                     <label class="leading-loose">부주제</label>
                                     <select id="subtopic" name="subtag" class="border border-gray-300 rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
-                                        <option value="{{board_info.subtag}}">{{board_info.subtag}}</option>
+                                        {%for tag in keywords[board_info.tag]%}
+                                            <option value="{{tag}}">{{tag}}</option>
+                                        {%endfor%}
                                     </select>
                                 </div>
                             </div>
@@ -96,7 +102,7 @@
     const subtopicSelect = document.getElementById("subtopic");
 
     var keywords = {{ keywords | tojson }};
-
+    
     topicSelect.addEventListener("change", function () {
         const selectedTopic = this.value;
         if (selectedTopic) {

@@ -69,7 +69,7 @@
                         </form>
 
                         <!-- 링크 복사 기능-->
-                        <button onclick="copyTextToClipboard();" class="cursor-pointer uppercase text-xs flex flex-row items-center justify-center font-semibold"
+                        <button onclick="copyTextToClipboard('{{board_info._id}}');" class="cursor-pointer uppercase text-xs flex flex-row items-center justify-center font-semibold"
                                 id="paste_button">
                             <div class="mr-2">
                                 <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
@@ -78,7 +78,7 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input id="for-copy" value="{{board_info.url}}" hidden>
+                            <input id="for-copy-{{board_info._id}}" value="{{board_info.url}}" hidden>
                             Copy link
                         </button>
                     </div>
@@ -143,8 +143,8 @@
 </body>
 </html>
 <script>
-    function copyTextToClipboard() {
-        let copy_url = document.getElementById("for-copy").value;
+    function copyTextToClipboard(board_id) {
+        let copy_url = document.getElementById("for-copy-" + board_id).value;
 
         // 텍스트를 복사하기 위해 임시로 textarea 엘리먼트를 생성합니다.
         var textarea = document.createElement("textarea");

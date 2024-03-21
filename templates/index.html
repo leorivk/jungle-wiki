@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      #board_url{
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+    </style>
   </head>
   <style>
     .over_text {
@@ -64,7 +71,7 @@
                   <p class="text-gray-500 over_text">
                     <span class="font-semibold mr-2 text-xs uppercase">URL:</span>
                     <a href="{{ board.url }}">
-                      <span>{{board.url}}</span>
+                      <span id="board_url">{{board.url}}</span>
                     </a>
                   </p>
                 </div>

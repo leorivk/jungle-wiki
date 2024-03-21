@@ -31,6 +31,10 @@ def board_detail_page(board_id):
 @comment_blueprint.route('/comment', methods = ['POST'])
 def comment_create():
     user_id = get_user_id()
+    
+    if not user_id:
+        return redirect("/login")
+    
     user_info = users.find_one({'id': user_id})
 
     board_id = request.form.get('board_id')

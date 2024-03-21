@@ -10,7 +10,7 @@
 
 3. 파이썬 dependency 설치
 ```
-    python -m pip install Flask
+    pip install -r requirements.txt
 ```
 4. 노드 dependency 설치
 ```
